@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+
+  busSchedules        BusSchedule[]
+  shipSchedules       ShipSchedule[]
+  planeSchedules      PlaneSchedule[]
+  speedboatSchedules  SpeedboatSchedule[]
+  angkotSchedules     AngkotSchedule[]
+  news                News[]
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+  role      Role 
+}
+
+model BusSchedule {
+  id            String   @id @default(uuid())
+  origin        String
+  destination   String
+  departureTime DateTime
+  status        Status
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  adminId       String
+  admin         Admin    @relation(fields: [adminId], references: [id])
+}
+
+model ShipSchedule {
+  id            String   @id @default(uuid())
+  origin        String
+  destination   String
+  departureTime DateTime
+  status        Status
+  shipName      String
+  createdAt     DateTime @default(now())
+
+  adminId       String
+  admin         Admin    @relation(fields: [adminId], references: [id])
+}
+model PlaneSchedule {
+  id            String   @id @default(uuid())
+  origin        String
+  destination   String
+  departureTime DateTime
+  status        Status
+  airline       String
+  flightNumber  String
+  createdAt     DateTime @default(now())
+
+  adminId       String
+  admin         Admin    @relation(fields: [adminId], references: [id])
+}
+model SpeedboatSchedule {
+  id            String   @id @default(uuid())
+  origin        String
+  destination   String
+  departureTime DateTime
+  status        Status
+  boatName      String?
+  createdAt     DateTime @default(now())
+
+  adminId       String
+  admin         Admin    @relation(fields: [adminId], references: [id])
+}
+model AngkotSchedule {
+  id            String   @id @default(uuid())
+  route         String
+  origin        String
+  destination   String
+  departureTime DateTime
+  status        Status
+  createdAt     DateTime @default(now())
+
+  adminId       String
+  admin         Admin    @relation(fields: [adminId], references: [id])
+}
+model News {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+
+  adminId   String
+  admin     Admin    @relation(fields: [adminId], references: [id])
+}
+enum Status {
+  ON_TIME
+  DELAYED
+  CANCELLED
+}
+enum Role {
+  ADMIN
+  USER
+}
