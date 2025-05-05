@@ -29,7 +29,7 @@ model Admin {
   news                News[]
 }
 
-model User {
+model Users {
   id        String   @id @default(uuid())
   email     String   @unique
   name      String

@@ -1,0 +1,32 @@
+.modal-delete {
+  .ant-modal-content {
+    border-radius: 22px !important;
+  }
+  .modal-delete__container {
+    border-radius: 16px;
+    padding: 48px 36px 48px 36px;
+    text-align: center;
+    .ant-typography {
+      margin-bottom: 16px;
+    }
+    button {
+      width: 199px;
+      height: 48px;
+      border-radius: 42px;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .modal-delete {
+    .modal-delete__container {
+      padding: 18px 16px 18px 16px;
+      text-align: center;
+      button {
+        width: 199px;
+        height: 48px;
+        border-radius: 42px;
+      }
+    }
+  }
+}

@@ -7,8 +7,8 @@ import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '@/icons'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import Cookies from 'js-cookie'
+import { baseApi } from '@/data/consts/base-api'
+import { setIdUser, setRole, setToken } from '@/app/auth/action'
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -19,23 +19,25 @@ export default function LoginForm() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    console.log("email",email)
-    console.log("password",password)
-    if (error || !data.session) {
+    try {
+      const response = await baseApi.post('/auth/login', {
+        email,
+        password,
+      })
+      console.log(response.data)
+      const data = response.data
+      await setToken(data.session.access_token)
+      if (data.user.email === 'admin@gmail.com') {
+        await setRole('ADMIN')
+      } else {
+        await setRole('USER')
+      }
+      await setIdUser(data.user.id)
+      router.push('/')
+      return response.data
+    } catch (error) {
       console.log(error)
-      return
     }
-    Cookies.set('token', data.session.access_token, {
-      expires: 7, 
-      secure: true,
-      sameSite: 'Strict',
-    })
-    router.push('/') 
   }
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">

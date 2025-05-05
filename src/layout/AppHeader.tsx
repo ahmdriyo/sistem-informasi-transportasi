@@ -1,42 +1,62 @@
-"use client";
-import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
-import { useSidebar } from "@/context/SidebarContext";
-import Image from "next/image";
-import Link from "next/link";
-import React, { useState ,useEffect,useRef} from "react";
-
+'use client'
+import { ThemeToggleButton } from '@/components/common/ThemeToggleButton'
+import { useSidebar } from '@/context/SidebarContext'
+import Image from 'next/image'
+import { LoginOutlined } from '@ant-design/icons'
+import Link from 'next/link'
+import React, { useState, useEffect, useRef } from 'react'
+import { Button } from 'antd'
+import { getToken } from '@/app/auth/action'
+import { logout } from '@/components/auth/Logout'
+import { useRouter } from 'next/navigation'
 const AppHeader: React.FC = () => {
-  const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
+  const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false)
+  const router = useRouter()
 
-  const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
+  const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar()
 
   const handleToggle = () => {
     if (window.innerWidth >= 1024) {
-      toggleSidebar();
+      toggleSidebar()
     } else {
-      toggleMobileSidebar();
+      toggleMobileSidebar()
     }
-  };
+  }
 
   const toggleApplicationMenu = () => {
-    setApplicationMenuOpen(!isApplicationMenuOpen);
-  };
-  const inputRef = useRef<HTMLInputElement>(null);
+    setApplicationMenuOpen(!isApplicationMenuOpen)
+  }
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-        event.preventDefault();
-        inputRef.current?.focus();
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault()
+        inputRef.current?.focus()
       }
-    };
+    }
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+  const fetchUser = async () => {
+    const token = await getToken() // ambil dari cookie/localStorage kamu
+    const res = await fetch('/api/user', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    const data = await res.json()
+    console.log('data', data)
+    return data
+  }
+  const handelLogout = async () => {
+    await logout()
+    router.replace('/auth/login')
+  }
 
   return (
     <header className="sticky top-0 flex w-full bg-white border-gray-200 z-99999 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
@@ -48,13 +68,7 @@ const AppHeader: React.FC = () => {
             aria-label="Toggle Sidebar"
           >
             {isMobileOpen ? (
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   fillRule="evenodd"
                   clipRule="evenodd"
@@ -63,13 +77,7 @@ const AppHeader: React.FC = () => {
                 />
               </svg>
             ) : (
-              <svg
-                width="16"
-                height="12"
-                viewBox="0 0 16 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   fillRule="evenodd"
                   clipRule="evenodd"
@@ -82,33 +90,15 @@ const AppHeader: React.FC = () => {
           </button>
 
           <Link href="/" className="lg:hidden">
-            <Image
-              width={154}
-              height={32}
-              className="dark:hidden"
-              src="./images/logo/logo.svg"
-              alt="Logo"
-            />
-            <Image
-              width={154}
-              height={32}
-              className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
-              alt="Logo"
-            />
+            <Image width={154} height={32} className="dark:hidden" src="./images/logo/logo.svg" alt="Logo" />
+            <Image width={154} height={32} className="hidden dark:block" src="./images/logo/logo-dark.svg" alt="Logo" />
           </Link>
 
           <button
             onClick={toggleApplicationMenu}
             className="flex items-center justify-center w-10 h-10 text-gray-700 rounded-lg z-99999 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 lg:hidden"
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -142,9 +132,8 @@ const AppHeader: React.FC = () => {
                   ref={inputRef}
                   type="text"
                   placeholder="Search or type command..."
-                  className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
+                  className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
                 />
-
                 <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
                   <span> ⌘ </span>
                   <span> K </span>
@@ -155,18 +144,27 @@ const AppHeader: React.FC = () => {
         </div>
         <div
           className={`${
-            isApplicationMenuOpen ? "flex" : "hidden"
+            isApplicationMenuOpen ? 'flex' : 'hidden'
           } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
         >
-          <div className="flex items-center gap-2 2xsm:gap-3">
-            {/* <!-- Dark Mode Toggler --> */}
+          <Button onClick={() => fetchUser()}>Get User</Button>
+          <Button onClick={handelLogout}>Logout</Button>
+          <div className="flex items-center gap-2 justify-center">
+            <Link
+              href="/auth/login"
+              className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <LoginOutlined />
+                <p>Login</p>
+              </div>
+            </Link>
             <ThemeToggleButton />
-            {/* <!-- Dark Mode Toggler --> */}
           </div>
         </div>
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default AppHeader;
+export default AppHeader
