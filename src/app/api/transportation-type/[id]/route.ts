@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server'
+import {NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params
 
@@ -20,7 +20,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 })
   }
 }
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params
 
@@ -33,6 +33,28 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     })
 
     return NextResponse.json(deletedTransportationType)
+  } catch (error) {
+    console.error('Terjadi error:', error)
+    return NextResponse.json({ error: 'Terjadi kesalahan' }, { status: 500 })
+  }
+}
+
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const { id } = params
+    const { nama, jenis } = await req.json()
+    if (!id || !nama || !jenis) {
+      return NextResponse.json({ error: 'Semua field wajib diisi.' }, { status: 400 })
+    }
+    const updatedTransportationType = await prisma.transportationType.update({
+      where: { id },
+      data: {
+        nama,
+        jenis,
+      },
+    })
+
+    return NextResponse.json(updatedTransportationType)
   } catch (error) {
     console.error('Terjadi error:', error)
     return NextResponse.json({ error: 'Terjadi kesalahan' }, { status: 500 })

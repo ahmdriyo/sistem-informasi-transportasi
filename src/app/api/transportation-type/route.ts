@@ -32,24 +32,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Terjadi kesalahan' }, { status: 500 })
   }
 }
-export async function PUT(req: NextRequest) {
-  try {
-    const { id, nama, jenis } = await req.json()
-    if (!id || !nama || !jenis) {
-      return NextResponse.json({ error: 'ID transportasi wajib diisi.' }, { status: 400 })
-    }
-    const updatedTransportationType = await prisma.transportationType.update({
-      where: { id },
-      data: {
-        nama,
-        jenis,
-      },
-    })
 
-    return NextResponse.json(updatedTransportationType)
-  } catch (error) {
-    console.error('Terjadi error:', error)
-    return NextResponse.json({ error: 'Terjadi kesalahan' }, { status: 500 })
-  }
-}
 
