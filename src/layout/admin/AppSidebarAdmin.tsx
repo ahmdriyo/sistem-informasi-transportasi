@@ -16,55 +16,19 @@ import {
   TableIcon,
   UserCircleIcon,
 } from '@/icons'
+import axios from 'axios'
 type NavItem = {
   name: string
   icon: React.ReactNode
   path?: string
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[]
 }
-
-const navItems: NavItem[] = [
-  {
-    icon: <GridIcon />,
-    name: 'Dashboard',
-    subItems: [{ name: 'Ecommerce', path: '/', pro: false }],
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: 'User Profile',
-    path: '/profile',
-  },
-  {
-    icon: <PageIcon />,
-    name: 'Tipe Transportasi',
-    path: '/admin/type-transportation',
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: 'Kota',
-    path: '/admin/city',
-  },
-
-  {
-    name: 'Forms',
-    icon: <ListIcon />,
-    subItems: [{ name: 'Form Elements', path: '/form-elements', pro: false }],
-  },
-  {
-    name: 'Tables',
-    icon: <TableIcon />,
-    subItems: [{ name: 'Basic Tables', path: '/admin/basic-tables', pro: false }],
-  },
-  {
-    name: 'Pages',
-    icon: <PageIcon />,
-    subItems: [
-      { name: 'Blank Page', path: '/blank', pro: false },
-      { name: '404 Error', path: '/error-404', pro: false },
-    ],
-  },
-]
-
+interface TransportationType {
+  id: string
+  nama: string
+  jenis: string
+  createdAt: string
+}
 const othersItems: NavItem[] = [
   {
     icon: <PieChartIcon />,
@@ -87,6 +51,77 @@ const othersItems: NavItem[] = [
 const AppSidebarAdmin: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar()
   const pathname = usePathname()
+  const [data, setData] = useState<TransportationType[]>([])
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await axios.get('/api/transportation-type')
+        setData(res.data)
+      } catch (error) {
+        console.error('Gagal mengambil data:', error)
+      }
+    }
+    fetchData()
+  }, [])
+  const navItems: NavItem[] = [
+    {
+      icon: <GridIcon />,
+      name: 'Dashboard',
+      subItems: [{ name: 'Ecommerce', path: '/', pro: false }],
+    },
+    {
+      icon: <UserCircleIcon />,
+      name: 'User Profile',
+      path: '/profile',
+    },
+    {
+      icon: <PageIcon />,
+      name: 'Tipe Transportasi',
+      path: '/admin/type-transportation',
+    },
+    {
+      icon: <BoxCubeIcon />,
+      name: 'Kota/Kabupaten',
+      path: '/admin/city',
+    },
+    {
+      icon: <ListIcon />,
+      name: 'Jadwal',
+      subItems: data.map((item) => ({
+        name: item.nama,
+        path: `/jadwal/${item.nama}`,
+        pro: false,
+      })),
+    },
+    {
+      icon: <ListIcon />,
+      name: 'Rute',
+      subItems: data.map((item) => ({
+        name: item.nama,
+        path: `/rute/${item.nama}`,
+        pro: false,
+      })),
+    },
+    {
+      name: 'Forms',
+      icon: <ListIcon />,
+      subItems: [{ name: 'Form Elements', path: '/form-elements', pro: false }],
+    },
+    {
+      name: 'Tables',
+      icon: <TableIcon />,
+      subItems: [{ name: 'Basic Tables', path: '/admin/basic-tables', pro: false }],
+    },
+    {
+      name: 'Pages',
+      icon: <PageIcon />,
+      subItems: [
+        { name: 'Blank Page', path: '/blank', pro: false },
+        { name: '404 Error', path: '/error-404', pro: false },
+      ],
+    },
+  ]
 
   const renderMenuItems = (navItems: NavItem[], menuType: 'main' | 'others') => (
     <ul className="flex flex-col gap-4">

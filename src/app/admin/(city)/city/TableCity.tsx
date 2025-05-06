@@ -1,32 +1,29 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table'
-import { format } from 'date-fns'
 import axios from 'axios'
 import { Button, message, Spin, Modal } from 'antd'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/navigation'
 
-interface TransportationType {
+interface CityType {
   id: string
-  nama: string
-  jenis: string
+  namaKota: string
   createdAt: string
 }
 
-export default function TableTypeTransportasi() {
-  const [data, setData] = useState<TransportationType[]>([])
+export default function TableCity() {
+  const [data, setData] = useState<CityType[]>([])
   const [loading, setLoading] = useState(true)
   const [deleteModalVisible, setDeleteModalVisible] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
-  const [messageApi, contextHolder] = message.useMessage()
   const router = useRouter()
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get('/api/transportation-type')
+        const res = await axios.get('/api/city')
         setData(res.data)
       } catch (error) {
         console.error('Gagal mengambil data:', error)
@@ -44,16 +41,15 @@ export default function TableTypeTransportasi() {
 
   const handleDelete = async () => {
     if (!deleteId) return
-
     setDeleteLoading(true)
     try {
-      await axios.delete(`/api/transportation-type/${deleteId}`)
+      await axios.delete(`/api/city/${deleteId}`)
       setData((prev) => prev.filter((item) => item.id !== deleteId))
-      await messageApi.success('Data berhasil dihapus')
+      message.success('Data berhasil dihapus')
       setDeleteModalVisible(false)
     } catch (error) {
       console.error('Gagal menghapus data:', error)
-      messageApi.error('Gagal menghapus data')
+      message.error('Gagal menghapus data')
     } finally {
       setDeleteLoading(false)
       setDeleteId(null)
@@ -67,7 +63,6 @@ export default function TableTypeTransportasi() {
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-      {contextHolder}
       <div className="max-w-full overflow-x-auto">
         <div className="min-w-[800px]">
           <Table>
@@ -83,19 +78,7 @@ export default function TableTypeTransportasi() {
                   isHeader
                   className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
                 >
-                  Nama Transportasi
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
-                >
-                  Jenis Transportasi
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
-                >
-                  Created At
+                  Nama Kota/Kabupaten
                 </TableCell>
                 <TableCell
                   isHeader
@@ -128,19 +111,13 @@ export default function TableTypeTransportasi() {
                       {index + 1}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
-                      {item.nama}
-                    </TableCell>
-                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
-                      {item.jenis}
-                    </TableCell>
-                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
-                      {format(new Date(item.createdAt), 'dd MMM yyyy')}
+                      {item.namaKota}
                     </TableCell>
                     <TableCell className="px-5 py-4 items-center justify-center text-center gap-4 flex">
                       <Button
                         type="primary"
                         icon={<EditOutlined />}
-                        onClick={() => router.push(`/admin/edit-type-transportation/${item.id}`)}
+                        onClick={() => router.push(`/admin/edit-city/${item.id}`)}
                       />
                       <Button
                         type="primary"

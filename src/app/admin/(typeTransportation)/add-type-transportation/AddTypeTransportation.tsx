@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { ChevronDownIcon } from '@/icons'
-import DatePicker from '@/components/form/date-picker'
 import ComponentCard from '@/components/common/ComponentCard'
 import Label from '@/components/form/Label'
 import Input from '@/components/form/input/InputField'
@@ -15,8 +14,7 @@ export default function AddTypeTransportation() {
   const router = useRouter()
   const [nama, setNama] = useState('')
   const [jenis, setJenis] = useState('')
-  const [createdAt, setCreatedAt] = useState<Date | null>(null)
-
+  const [messageApi, contextHolder] = message.useMessage()
   const options = [
     { value: 'DARAT', label: 'DARAT' },
     { value: 'LAUT', label: 'LAUT' },
@@ -28,8 +26,8 @@ export default function AddTypeTransportation() {
   }
 
   const handleSubmit = async () => {
-    if (!nama || !jenis || !createdAt) {
-      message.warning('Semua field wajib diisi.')
+    if (!nama || !jenis) {
+      messageApi.warning('Semua field wajib diisi.')
       return
     }
 
@@ -37,18 +35,18 @@ export default function AddTypeTransportation() {
       await axios.post('/api/transportation-type', {
         nama,
         jenis,
-        createdAt,
       })
-      message.success('Tipe transportasi berhasil ditambahkan!')
+      await messageApi.success('Tipe transportasi berhasil ditambahkan!')
       router.back()
     } catch (error) {
       console.error(error)
-      message.error('Gagal menyimpan data.')
+      messageApi.error('Gagal menyimpan data.')
     }
   }
 
   return (
     <ComponentCard back={handleBack} title="Input Type Transportasi">
+      {contextHolder}
       <div className="space-y-6">
         <div>
           <Label>Nama Transportasi</Label>
@@ -67,16 +65,6 @@ export default function AddTypeTransportation() {
               <ChevronDownIcon />
             </span>
           </div>
-        </div>
-        <div>
-          <DatePicker
-            id="date-picker"
-            label="Created At"
-            placeholder="Select a date"
-            onChange={(dates) => {
-              setCreatedAt(Array.isArray(dates) ? dates[0] : dates)
-            }}
-          />
         </div>
       </div>
       <div className="flex gap-4 mt-6">
