@@ -27,12 +27,13 @@ export default function LoginForm() {
       console.log(response.data)
       const data = response.data
       await setToken(data.session.access_token)
+      await setIdUser(data.user.id)
       if (data.user.email === 'admin@gmail.com') {
         await setRole('ADMIN')
+        router.push('/admin')
       } else {
         await setRole('USER')
       }
-      await setIdUser(data.user.id)
       router.push('/')
       return response.data
     } catch (error) {

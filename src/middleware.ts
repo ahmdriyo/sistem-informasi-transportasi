@@ -13,17 +13,20 @@ export function middleware(req: NextRequest) {
   const isApiRoute = pathname.startsWith('/api')
   const isStatic = pathname.startsWith('/_next') || pathname.startsWith('/favicon.ico') || pathname.includes('/images/') || pathname.includes('/icons/')
 
-  // Cegah akses /admin dan /profile jika tidak login
+  if (token && isPublicPath) {
+    return NextResponse.redirect(new URL('/', req.url))
+  }
+
+  // Prevent /admin and /profile access if not logged in
   if (!token && (pathname.startsWith('/admin') || pathname.startsWith('/profile'))) {
     return NextResponse.redirect(new URL('/auth/login', req.url))
   }
 
-  // Hanya ADMIN yang boleh akses /admin dan /profile
+  // Only ADMINs can access /admin and /profile
   if (token && (pathname.startsWith('/admin') || pathname.startsWith('/profile')) && role !== 'ADMIN') {
-    return NextResponse.redirect(new URL('/', req.url)) // Redirect ke home atau halaman lain
+    return NextResponse.redirect(new URL('/error-404', req.url))
   }
 
-  // Boleh akses public, API, dan static
   if (isPublicPath || isApiRoute || isStatic) {
     return NextResponse.next()
   }

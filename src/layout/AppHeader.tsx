@@ -1,16 +1,16 @@
 'use client'
-import { ThemeToggleButton } from '@/components/common/ThemeToggleButton'
-import { useSidebar } from '@/context/SidebarContext'
-import Image from 'next/image'
-import { LoginOutlined } from '@ant-design/icons'
-import Link from 'next/link'
-import React, { useState, useEffect, useRef } from 'react'
-import { Button } from 'antd'
 import { getToken } from '@/app/auth/action'
 import { logout } from '@/components/auth/Logout'
+import { ThemeToggleButton } from '@/components/common/ThemeToggleButton'
+import { useSidebar } from '@/context/SidebarContext'
+import { LoginOutlined, LogoutOutlined } from '@ant-design/icons'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import React, { useEffect, useRef, useState } from 'react'
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false)
+  const [name, setName] = useState('')
   const router = useRouter()
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar()
@@ -42,17 +42,21 @@ const AppHeader: React.FC = () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [])
-  const fetchUser = async () => {
-    const token = await getToken() // ambil dari cookie/localStorage kamu
-    const res = await fetch('/api/user', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    const data = await res.json()
-    console.log('data', data)
-    return data
-  }
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = await getToken()
+      const res = await fetch('/api/user', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      const data = await res.json()
+      const dataName = data.user?.name
+      setName(dataName)
+      return data
+    }
+    fetchUser()
+  }, [])
   const handelLogout = async () => {
     await logout()
     router.replace('/auth/login')
@@ -147,18 +151,29 @@ const AppHeader: React.FC = () => {
             isApplicationMenuOpen ? 'flex' : 'hidden'
           } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
         >
-          <Button onClick={() => fetchUser()}>Get User</Button>
-          <Button onClick={handelLogout}>Logout</Button>
+          <p className="dark:text-warning-25">{name}</p>
           <div className="flex items-center gap-2 justify-center">
-            <Link
-              href="/auth/login"
-              className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-            >
-              <div className="flex items-center justify-center gap-2">
-                <LoginOutlined />
-                <p>Login</p>
+            {name ? (
+              <div
+                onClick={() => handelLogout()}
+                className="flex items-center cursor-pointer gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <LogoutOutlined />
+                  <p>Logout</p>
+                </div>
               </div>
-            </Link>
+            ) : (
+              <Link
+                href="/auth/login"
+                className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <LoginOutlined />
+                  <p>Login</p>
+                </div>
+              </Link>
+            )}
             <ThemeToggleButton />
           </div>
         </div>

@@ -152,8 +152,6 @@ export default function BasicTableOne() {
                 </TableCell>
               </TableRow>
             </TableHeader>
-
-            {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {tableData.map((order) => (
                 <TableRow key={order.id}>
