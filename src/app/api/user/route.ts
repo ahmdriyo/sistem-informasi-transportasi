@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
 import { PrismaClient } from '@prisma/client'
+import { getIdUser } from '@/app/auth/action'
 
 const prisma = new PrismaClient()
 
@@ -10,12 +10,12 @@ export const GET = async (req: NextRequest) => {
     if (!token) {
       return NextResponse.json({ error: 'Token tidak ditemukan' }, { status: 401 })
     }
-    const { data: { user }, error } = await supabase.auth.getUser(token)
-    if (error || !user) {
-      return NextResponse.json({ error: 'Token tidak valid' }, { status: 401 })
+    const userId = await getIdUser()
+    if (!userId) {
+      return NextResponse.json({ error: 'Token tidak valid atau user tidak ditemukan' }, { status: 401 })
     }
     const userData = await prisma.users.findUnique({
-      where: { id: user.id },
+      where: { id: userId },
       select: {
         id: true,
         name: true,
@@ -28,7 +28,8 @@ export const GET = async (req: NextRequest) => {
       return NextResponse.json({ error: 'User tidak ditemukan' }, { status: 404 })
     }
     return NextResponse.json({ user: userData }, { status: 200 })
-  } catch {
+  } catch (error) {
+    console.error('Terjadi error:', error)
     return NextResponse.json({ error: 'Terjadi kesalahan' }, { status: 500 })
   }
 }
