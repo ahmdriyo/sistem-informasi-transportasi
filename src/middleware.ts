@@ -16,6 +16,11 @@ export function middleware(req: NextRequest) {
   if (token && isPublicPath) {
     return NextResponse.redirect(new URL('/', req.url))
   }
+  
+   // Kalau ADMIN dan buka selain /admin, redirect ke /admin
+   if (token && role === 'ADMIN' && !pathname.startsWith('/admin') && !isApiRoute && !isStatic) {
+    return NextResponse.redirect(new URL('/admin', req.url))
+  }
 
   // Prevent /admin and /profile access if not logged in
   if (!token && (pathname.startsWith('/admin') || pathname.startsWith('/profile'))) {

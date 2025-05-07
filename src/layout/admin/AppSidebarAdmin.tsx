@@ -17,6 +17,7 @@ import {
   UserCircleIcon,
 } from '@/icons'
 import axios from 'axios'
+import { BoxPlotFilled } from '@ant-design/icons'
 type NavItem = {
   name: string
   icon: React.ReactNode
@@ -84,6 +85,11 @@ const AppSidebarAdmin: React.FC = () => {
       icon: <BoxCubeIcon />,
       name: 'Kota/Kabupaten',
       path: '/admin/city',
+    },
+    {
+      icon: <BoxPlotFilled />,
+      name: 'Operator Transportasi',
+      path: '/admin/transport-operator',
     },
     {
       icon: <ListIcon />,
