@@ -13,7 +13,7 @@ import {
   PageIcon,
   PieChartIcon,
   PlugInIcon,
-  TableIcon,
+  // TableIcon,
   UserCircleIcon,
 } from '@/icons'
 import axios from 'axios'
@@ -96,7 +96,7 @@ const AppSidebarAdmin: React.FC = () => {
       name: 'Jadwal',
       subItems: data.map((item) => ({
         name: item.nama,
-        path: `/jadwal/${item.nama}`,
+        path: `/admin/jadwal/${item.nama}`,
         pro: false,
       })),
     },
@@ -105,28 +105,28 @@ const AppSidebarAdmin: React.FC = () => {
       name: 'Rute',
       subItems: data.map((item) => ({
         name: item.nama,
-        path: `/rute/${item.nama}`,
+        path: `/admin/rute/${item.nama}`,
         pro: false,
       })),
     },
-    {
-      name: 'Forms',
-      icon: <ListIcon />,
-      subItems: [{ name: 'Form Elements', path: '/form-elements', pro: false }],
-    },
-    {
-      name: 'Tables',
-      icon: <TableIcon />,
-      subItems: [{ name: 'Basic Tables', path: '/admin/basic-tables', pro: false }],
-    },
-    {
-      name: 'Pages',
-      icon: <PageIcon />,
-      subItems: [
-        { name: 'Blank Page', path: '/blank', pro: false },
-        { name: '404 Error', path: '/error-404', pro: false },
-      ],
-    },
+    // {
+    //   name: 'Forms',
+    //   icon: <ListIcon />,
+    //   subItems: [{ name: 'Form Elements', path: '/form-elements', pro: false }],
+    // },
+    // {
+    //   name: 'Tables',
+    //   icon: <TableIcon />,
+    //   subItems: [{ name: 'Basic Tables', path: '/admin/basic-tables', pro: false }],
+    // },
+    // {
+    //   name: 'Pages',
+    //   icon: <PageIcon />,
+    //   subItems: [
+    //     { name: 'Blank Page', path: '/blank', pro: false },
+    //     { name: '404 Error', path: '/error-404', pro: false },
+    //   ],
+    // },
   ]
 
   const renderMenuItems = (navItems: NavItem[], menuType: 'main' | 'others') => (
@@ -326,7 +326,7 @@ const AppSidebarAdmin: React.FC = () => {
               {renderMenuItems(navItems, 'main')}
             </div>
 
-            <div className="">
+            {/* <div className="">
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'
@@ -335,7 +335,7 @@ const AppSidebarAdmin: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? 'Others' : <HorizontaLDots />}
               </h2>
               {renderMenuItems(othersItems, 'others')}
-            </div>
+            </div> */}
           </div>
         </nav>
       </div>
