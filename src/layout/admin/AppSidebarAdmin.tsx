@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -13,7 +13,6 @@ import {
   PageIcon,
   PieChartIcon,
   PlugInIcon,
-  // TableIcon,
   UserCircleIcon,
 } from '@/icons'
 import axios from 'axios'
@@ -65,7 +64,7 @@ const AppSidebarAdmin: React.FC = () => {
     }
     fetchData()
   }, [])
-  const navItems: NavItem[] = [
+  const navItems = useMemo(() => [
     {
       icon: <GridIcon />,
       name: 'Dashboard',
@@ -96,7 +95,7 @@ const AppSidebarAdmin: React.FC = () => {
       name: 'Jadwal',
       subItems: data.map((item) => ({
         name: item.nama,
-        path: `/admin/jadwal/${item.nama}`,
+        path: `/admin/schedule/${item.nama}`,
         pro: false,
       })),
     },
@@ -105,29 +104,11 @@ const AppSidebarAdmin: React.FC = () => {
       name: 'Rute',
       subItems: data.map((item) => ({
         name: item.nama,
-        path: `/admin/rute/${item.nama}`,
+        path: `/admin/route/${item.nama}`,
         pro: false,
       })),
     },
-    // {
-    //   name: 'Forms',
-    //   icon: <ListIcon />,
-    //   subItems: [{ name: 'Form Elements', path: '/form-elements', pro: false }],
-    // },
-    // {
-    //   name: 'Tables',
-    //   icon: <TableIcon />,
-    //   subItems: [{ name: 'Basic Tables', path: '/admin/basic-tables', pro: false }],
-    // },
-    // {
-    //   name: 'Pages',
-    //   icon: <PageIcon />,
-    //   subItems: [
-    //     { name: 'Blank Page', path: '/blank', pro: false },
-    //     { name: '404 Error', path: '/error-404', pro: false },
-    //   ],
-    // },
-  ]
+  ], [data])
 
   const renderMenuItems = (navItems: NavItem[], menuType: 'main' | 'others') => (
     <ul className="flex flex-col gap-4">
@@ -261,7 +242,7 @@ const AppSidebarAdmin: React.FC = () => {
     if (!submenuMatched) {
       setOpenSubmenu(null)
     }
-  }, [pathname, isActive])
+  }, [pathname, isActive,navItems])
 
   useEffect(() => {
     // Set the height of the submenu items when the submenu is opened
@@ -326,7 +307,7 @@ const AppSidebarAdmin: React.FC = () => {
               {renderMenuItems(navItems, 'main')}
             </div>
 
-            {/* <div className="">
+            <div className="">
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'
@@ -335,7 +316,7 @@ const AppSidebarAdmin: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? 'Others' : <HorizontaLDots />}
               </h2>
               {renderMenuItems(othersItems, 'others')}
-            </div> */}
+            </div>
           </div>
         </nav>
       </div>

@@ -17,7 +17,7 @@ interface RouteType {
   tipeTransportasi: { nama: string }
 }
 
-export default function TableRute() {
+export default function TableRoute() {
   const [data, setData] = useState<RouteType[]>([])
   const [loading, setLoading] = useState(true)
   const [deleteModalVisible, setDeleteModalVisible] = useState(false)

@@ -2,18 +2,18 @@
 import React from 'react'
 import ComponentCard from '@/components/common/ComponentCard'
 import { useRouter } from 'next/navigation'
-import TableCity from './TableCity'
+import TableSchedule from './TableSchedule'
 
-const CityPage = () => {
+const SchedulePage = () => {
   const router = useRouter()
   const handleCreate = () => {
-    router.push('/admin/add-city')
+    router.push('/admin/add-schedule')
   }
   return (
-    <ComponentCard title="Kota/Kabupaten" create={() => handleCreate()}>
-      <TableCity />
+    <ComponentCard title="Daftar Jadwal" create={() => handleCreate()}>
+      <TableSchedule />
     </ComponentCard>
   )
 }
 
-export default CityPage
+export default SchedulePage

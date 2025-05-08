@@ -2,18 +2,18 @@
 import React from 'react'
 import ComponentCard from '@/components/common/ComponentCard'
 import { useRouter } from 'next/navigation'
-import TableRute from './TableRute'
+import TableRoute from './TableRoute'
 
-const RutePage = () => {
+const RoutePage = () => {
   const router = useRouter()
   const handleCreate = () => {
-    router.push('/admin/rute/add-rute')
+    router.push('/admin/add-route')
   }
   return (
     <ComponentCard title="Daftar Rute" create={() => handleCreate()}>
-      <TableRute />
+      <TableRoute />
     </ComponentCard>
   )
 }
 
-export default RutePage
+export default RoutePage

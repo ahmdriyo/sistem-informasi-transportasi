@@ -20,7 +20,7 @@ interface TransportOperatorType {
   id: string
   nama: string
 }
-export default function AddRute() {
+export default function AddRoute() {
   const router = useRouter()
   const [asalKotaId, setAsalKotaId] = useState('')
   const [tujuanKotaId, setTujuanKotaId] = useState('')

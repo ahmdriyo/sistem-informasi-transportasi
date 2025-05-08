@@ -20,7 +20,7 @@ interface TransportOperatorType {
   id: string
   nama: string
 }
-export default function EditRute() {
+export default function EditSchedule() {
   const { id } = useParams()
   const router = useRouter()
   const [loading, setLoading] = useState(true)

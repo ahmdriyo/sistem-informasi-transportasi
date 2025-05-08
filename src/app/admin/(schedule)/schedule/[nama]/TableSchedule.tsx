@@ -1,30 +1,41 @@
 'use client'
+
 import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table'
 import axios from 'axios'
 import { Button, message, Spin, Modal } from 'antd'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 
-interface CityType {
+interface RouteType {
   id: string
-  namaKota: string
-  createdAt: string
+  deskripsi: string
+  tipeTransportasiId: string
+  asalKota: { namaKota: string }
+  tujuanKota: { namaKota: string }
+  operator: { nama: string }
+  tipeTransportasi: { nama: string }
 }
 
-export default function TableCity() {
-  const [data, setData] = useState<CityType[]>([])
+export default function TableSchedule() {
+  const [data, setData] = useState<RouteType[]>([])
   const [loading, setLoading] = useState(true)
   const [deleteModalVisible, setDeleteModalVisible] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const router = useRouter()
+  const params = useParams()
+  const nama = params?.nama as string
+  const [messageApi, contextHolder] = message.useMessage()
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get('/api/city')
-        setData(res.data)
+        const ruteRes = await axios.get('/api/route')
+        const filteredData = ruteRes.data.filter(
+          (dataRute: RouteType) => dataRute.tipeTransportasi?.nama?.replace(/\s+/g, '-') === nama,
+        )
+        setData(filteredData)
       } catch (error) {
         console.error('Gagal mengambil data:', error)
       } finally {
@@ -32,7 +43,7 @@ export default function TableCity() {
       }
     }
     fetchData()
-  }, [])
+  }, [nama])
 
   const showDeleteModal = (id: string) => {
     setDeleteId(id)
@@ -43,13 +54,13 @@ export default function TableCity() {
     if (!deleteId) return
     setDeleteLoading(true)
     try {
-      await axios.delete(`/api/city/${deleteId}`)
+      await axios.delete(`/api/route/${deleteId}`)
       setData((prev) => prev.filter((item) => item.id !== deleteId))
-      message.success('Data berhasil dihapus')
+      await messageApi.success('Rute berhasil dihapus')
       setDeleteModalVisible(false)
     } catch (error) {
       console.error('Gagal menghapus data:', error)
-      message.error('Gagal menghapus data')
+      messageApi.error('Gagal menghapus data')
     } finally {
       setDeleteLoading(false)
       setDeleteId(null)
@@ -63,26 +74,45 @@ export default function TableCity() {
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+      {contextHolder}
       <div className="max-w-full overflow-x-auto">
         <div className="min-w-[800px]">
           <Table>
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 <TableCell
-                  isHeader
                   className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                  isHeader
                 >
                   No
                 </TableCell>
                 <TableCell
-                  isHeader
                   className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                  isHeader
                 >
-                  Nama Kota/Kabupaten
+                  Asal Kota
                 </TableCell>
                 <TableCell
+                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
                   isHeader
+                >
+                  Tujuan Kota
+                </TableCell>
+                <TableCell
+                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                  isHeader
+                >
+                  Operator
+                </TableCell>
+                <TableCell
+                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                  isHeader
+                >
+                  Deskripsi
+                </TableCell>
+                <TableCell
                   className="px-5 py-3 font-medium text-center text-theme-xs text-gray-500 dark:text-gray-400"
+                  isHeader
                 >
                   Action
                 </TableCell>
@@ -91,17 +121,17 @@ export default function TableCity() {
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-10">
+                  <TableCell colSpan={6} className="text-center py-10">
                     <Spin />
                   </TableCell>
                 </TableRow>
               ) : data.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={4}
+                    colSpan={6}
                     className="px-5 py-4 text-center text-gray-500 text-theme-sm dark:text-gray-400"
                   >
-                    Tidak ada data.
+                    Tidak ada data untuk tipe transportasi ini.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -111,13 +141,22 @@ export default function TableCity() {
                       {index + 1}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
-                      {item.namaKota}
+                      {item.asalKota?.namaKota}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
+                      {item.tujuanKota?.namaKota}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
+                      {item.operator?.nama}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
+                      {item.deskripsi}
                     </TableCell>
                     <TableCell className="px-5 py-4 items-center justify-center text-center gap-4 flex">
                       <Button
                         type="primary"
                         icon={<EditOutlined />}
-                        onClick={() => router.push(`/admin/edit-city/${item.id}`)}
+                        onClick={() => router.push(`/admin/edit-rute/${item.id}`)}
                       />
                       <Button
                         type="primary"
@@ -133,6 +172,7 @@ export default function TableCity() {
           </Table>
         </div>
       </div>
+
       <Modal
         title="Konfirmasi Hapus"
         open={deleteModalVisible}
@@ -144,7 +184,7 @@ export default function TableCity() {
         centered
         okButtonProps={{ danger: true }}
       >
-        <p>Apakah Anda yakin ingin menghapus data ini?</p>
+        <p>Apakah Anda yakin ingin menghapus rute ini?</p>
         <p>Data yang dihapus tidak dapat dikembalikan.</p>
       </Modal>
     </div>
