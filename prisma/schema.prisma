@@ -4,7 +4,6 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -21,74 +20,78 @@ model Users {
   name      String
   password  String
   createdAt DateTime @default(now())
-  role      Role 
+  role      Role
 }
+
 enum Role {
   ADMIN
   USER
 }
 
 model TransportationType {
-  id        String              @id @default(uuid())
+  id        String               @id @default(uuid())
   nama      String
-  jenis     TransportasiKategori    
-  createdAt DateTime           @default(now())
+  jenis     TransportasiKategori
+  createdAt DateTime             @default(now())
 
-  operators TransportOperator[] 
+  operators TransportOperator[]
   routes    Route[]
+  schedules Schedule[]
 }
 
-enum TransportasiKategori  {
+enum TransportasiKategori {
   UDARA
   DARAT
   LAUT
 }
 
-
 model City {
-  id         String   @id @default(uuid())
-  namaKota   String
-  provinsi   String?
-  createdAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  namaKota  String
+  provinsi  String?
+  createdAt DateTime @default(now())
 
-  asalRoutes    Route[] @relation("AsalKota")
-  tujuanRoutes  Route[] @relation("TujuanKota")
+  asalRoutes   Route[] @relation("AsalKota")
+  tujuanRoutes Route[] @relation("TujuanKota")
 }
 
 model TransportOperator {
-  id              String              @id @default(uuid())
-  nama            String
-  tipeId          String
-  createdAt       DateTime            @default(now())
+  id        String   @id @default(uuid())
+  nama      String
+  tipeId    String
+  createdAt DateTime @default(now())
 
-  tipe            TransportationType  @relation(fields: [tipeId], references: [id])
-  routes          Route[]
+  tipe     TransportationType @relation(fields: [tipeId], references: [id])
+  routes   Route[]
+  schedule Schedule[]
 }
 
 model Route {
-  id                  String              @id @default(uuid())
-  asalKotaId          String
-  tujuanKotaId        String
-  tipeTransportasiId  String
-  operatorId          String
-  deskripsi           String?
-  createdAt           DateTime            @default(now())
+  id                 String   @id @default(uuid())
+  asalKotaId         String
+  tujuanKotaId       String
+  tipeTransportasiId String
+  operatorId         String
+  deskripsi          String?
+  createdAt          DateTime @default(now())
 
-  asalKota            City                @relation("AsalKota", fields: [asalKotaId], references: [id])
-  tujuanKota          City                @relation("TujuanKota", fields: [tujuanKotaId], references: [id])
-  tipeTransportasi    TransportationType  @relation(fields: [tipeTransportasiId], references: [id])
-  operator            TransportOperator   @relation(fields: [operatorId], references: [id])
-  schedules           Schedule[]
+  asalKota         City               @relation("AsalKota", fields: [asalKotaId], references: [id])
+  tujuanKota       City               @relation("TujuanKota", fields: [tujuanKotaId], references: [id])
+  tipeTransportasi TransportationType @relation(fields: [tipeTransportasiId], references: [id])
+  operator         TransportOperator  @relation(fields: [operatorId], references: [id])
+  schedules        Schedule[]
 }
 
 model Schedule {
-  id            String   @id @default(uuid())
-  routeId       String
-  hari          String
-  jamBerangkat  String
-  jamTiba       String
-  harga         Int
-  createdAt     DateTime @default(now())
-
-  route         Route    @relation(fields: [routeId], references: [id])
+  id                 String             @id @default(uuid())
+  jamBerangkat       String
+  jamTiba            String
+  harga              Int
+  rute               Route              @relation(fields: [ruteId], references: [id])
+  operatorId         String
+  tipeTransportasiId String
+  tipeTransportasi   TransportationType @relation(fields: [tipeTransportasiId], references: [id])
+  ruteId             String
+  operator           TransportOperator  @relation(fields: [operatorId], references: [id])
+  createdAt          DateTime           @default(now())
 }
