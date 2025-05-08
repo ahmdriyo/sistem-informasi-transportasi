@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const id = (await params).id
     const city = await prisma.city.findUnique({
       where: { id },
     })
@@ -17,9 +17,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ error: 'Gagal mengambil kota' }, { status: 500 })
   }
 }
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const id = (await params).id
     const { namaKota } = await req.json()
     if (!namaKota) {
       return NextResponse.json({ error: 'Nama kota wajib diisi' }, { status: 400 })
@@ -35,9 +35,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const id = (await params).id
     const deletedCity = await prisma.city.delete({
       where: { id },
     })

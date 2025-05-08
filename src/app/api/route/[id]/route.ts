@@ -1,11 +1,12 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const id = (await params).id
     const route = await prisma.route.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         asalKota: true,
         tujuanKota: true,
@@ -24,17 +25,12 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
   }
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const {
-      asalKotaId,
-      tujuanKotaId,
-      tipeTransportasiId,
-      operatorId,
-      deskripsi,
-    } = await req.json()
+    const id = (await params).id
+    const { asalKotaId, tujuanKotaId, tipeTransportasiId, operatorId, deskripsi } = await req.json()
     const updatedRoute = await prisma.route.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         asalKotaId,
         tujuanKotaId,
@@ -50,10 +46,11 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const id = (await params).id
     await prisma.route.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ message: 'Rute berhasil dihapus' })

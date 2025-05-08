@@ -2,9 +2,9 @@ import {NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const id = (await params).id
 
     const transportationType = await prisma.transportationType.findUnique({
       where: { id },
@@ -20,9 +20,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 })
   }
 }
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const id = (await params).id
 
     if (!id) {
       return NextResponse.json({ error: 'ID transportasi wajib diisi.' }, { status: 400 })
@@ -39,9 +39,9 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const id = (await params).id
     const { nama, jenis } = await req.json()
     if (!id || !nama || !jenis) {
       return NextResponse.json({ error: 'Semua field wajib diisi.' }, { status: 400 })

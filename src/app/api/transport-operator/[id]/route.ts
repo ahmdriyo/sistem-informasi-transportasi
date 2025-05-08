@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const id = (await params).id
     const operator = await prisma.transportOperator.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { tipe: true },
     })
 
@@ -20,8 +21,9 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const id = (await params).id
     const { nama, tipeId } = await req.json()
 
     if (!nama || !tipeId) {
@@ -29,7 +31,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
 
     const updatedOperator = await prisma.transportOperator.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         nama,
         tipeId,
@@ -43,10 +45,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const id = (await params).id
     await prisma.transportOperator.delete({
-      where: { id: params.id },
+      where: { id },
     })
     return NextResponse.json({ message: 'Data berhasil dihapus' })
   } catch (error) {
