@@ -17,7 +17,7 @@ interface RouteType {
 }
 interface TransportationType {
   id: string
-  tipeTransportasi: { nama: string }
+  nama: string
 }
 interface TransportOperatorType {
   id: string
@@ -41,21 +41,21 @@ export default function AddSchedule() {
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const [ruteRes, operatorRes] = await Promise.all([
+        const [ruteRes, operatorRes,tipeRes] = await Promise.all([
           axios.get('/api/route'),
           axios.get('/api/transport-operator'),
+          axios.get('/api/transportation-type'),
         ])
-        console.log(ruteRes)
         setRouteOptions(
           ruteRes.data.map((r: RouteType) => ({
             value: r.id,
-            label: `${r.asalKota.namaKota} - ${r.tujuanKota.namaKota}`,
+            label: `${r.asalKota.namaKota} → ${r.tujuanKota.namaKota}`,
           })),
         )
         settipeTransportasiOptions(
-          ruteRes.data.map((r: TransportationType) => ({
+          tipeRes.data.map((r: TransportationType) => ({
             value: r.id,
-            label: `${r.tipeTransportasi.nama}`,
+            label: `${r.nama}`,
           })),
         )
         setOperatorOptions(
@@ -87,7 +87,7 @@ export default function AddSchedule() {
         tipeTransportasiId,
       })
 
-      messageApi.success('Jadwal berhasil ditambahkan!')
+      await messageApi.success('Jadwal berhasil ditambahkan!')
       router.back()
     } catch (error) {
       console.error(error)
@@ -128,7 +128,7 @@ export default function AddSchedule() {
           <Select options={operatorOptions} onChange={(val) => setOperatorId(val)} />
         </div>
         <div>
-          <Label>Operator</Label>
+          <Label>Tipe Transportaasi</Label>
           <Select options={tipeTransportasiOptions} onChange={(val) => setTipeTransportasiId(val)} />
         </div>
         <div className="flex gap-4 mt-6">
