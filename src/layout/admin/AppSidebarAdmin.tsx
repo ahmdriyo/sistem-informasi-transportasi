@@ -92,7 +92,7 @@ const AppSidebarAdmin: React.FC = () => {
     },
     {
       icon: <ListIcon />,
-      name: 'Jadwal',
+      name: 'Jadwal Transportasi',
       subItems: data.map((item) => ({
         name: item.nama,
         path: `/admin/schedule/${item.nama}`,
@@ -101,7 +101,7 @@ const AppSidebarAdmin: React.FC = () => {
     },
     {
       icon: <ListIcon />,
-      name: 'Rute',
+      name: 'Rute Transportasi',
       subItems: data.map((item) => ({
         name: item.nama,
         path: `/admin/route/${item.nama}`,

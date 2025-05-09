@@ -7,18 +7,25 @@ import { Button, message, Spin, Modal } from 'antd'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { useRouter, useParams } from 'next/navigation'
 
-interface RouteType {
+interface ScheduleType {
   id: string
-  deskripsi: string
-  tipeTransportasiId: string
-  asalKota: { namaKota: string }
-  tujuanKota: { namaKota: string }
-  operator: { nama: string }
-  tipeTransportasi: { nama: string }
+  jamBerangkat: string
+  jamTiba: string
+  harga: number
+  rute: {
+    asalKota: { namaKota: string }
+    tujuanKota: { namaKota: string }
+  }
+  operator: {
+    nama: string
+  }
+  tipeTransportasi: {
+    nama: string
+  }
 }
 
 export default function TableSchedule() {
-  const [data, setData] = useState<RouteType[]>([])
+  const [data, setData] = useState<ScheduleType[]>([])
   const [loading, setLoading] = useState(true)
   const [deleteModalVisible, setDeleteModalVisible] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
@@ -31,11 +38,11 @@ export default function TableSchedule() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const ruteRes = await axios.get('/api/route')
-        const filteredData = ruteRes.data.filter(
-          (dataRute: RouteType) => dataRute.tipeTransportasi?.nama?.replace(/\s+/g, '-') === nama,
+        const res = await axios.get('/api/schedule')
+        const filtered = res.data.filter(
+          (item: ScheduleType) => item.tipeTransportasi?.nama?.replace(/\s+/g, '-') === nama,
         )
-        setData(filteredData)
+        setData(filtered)
       } catch (error) {
         console.error('Gagal mengambil data:', error)
       } finally {
@@ -54,9 +61,9 @@ export default function TableSchedule() {
     if (!deleteId) return
     setDeleteLoading(true)
     try {
-      await axios.delete(`/api/route/${deleteId}`)
+      await axios.delete(`/api/schedule/${deleteId}`)
       setData((prev) => prev.filter((item) => item.id !== deleteId))
-      await messageApi.success('Rute berhasil dihapus')
+      await messageApi.success('Jadwal berhasil dihapus')
       setDeleteModalVisible(false)
     } catch (error) {
       console.error('Gagal menghapus data:', error)
@@ -76,62 +83,32 @@ export default function TableSchedule() {
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       {contextHolder}
       <div className="max-w-full overflow-x-auto">
-        <div className="min-w-[800px]">
+        <div className="min-w-[1000px]">
           <Table>
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                <TableCell
-                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
-                  isHeader
-                >
-                  No
-                </TableCell>
-                <TableCell
-                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
-                  isHeader
-                >
-                  Asal Kota
-                </TableCell>
-                <TableCell
-                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
-                  isHeader
-                >
-                  Tujuan Kota
-                </TableCell>
-                <TableCell
-                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
-                  isHeader
-                >
-                  Operator
-                </TableCell>
-                <TableCell
-                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
-                  isHeader
-                >
-                  Deskripsi
-                </TableCell>
-                <TableCell
-                  className="px-5 py-3 font-medium text-center text-theme-xs text-gray-500 dark:text-gray-400"
-                  isHeader
-                >
-                  Action
-                </TableCell>
+                {['No', 'Rute', 'Jam Berangkat', 'Jam Tiba', 'Harga', 'Operator', 'Action'].map((text) => (
+                  <TableCell
+                    key={text}
+                    className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                    isHeader
+                  >
+                    {text}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-10">
+                  <TableCell colSpan={8} className="text-center py-10">
                     <Spin />
                   </TableCell>
                 </TableRow>
               ) : data.length === 0 ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="px-5 py-4 text-center text-gray-500 text-theme-sm dark:text-gray-400"
-                  >
-                    Tidak ada data untuk tipe transportasi ini.
+                  <TableCell colSpan={8} className="text-center py-10 text-gray-500 dark:text-gray-400">
+                    Tidak ada jadwal untuk tipe transportasi ini.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -140,23 +117,24 @@ export default function TableSchedule() {
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                       {index + 1}
                     </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">{`${item.rute?.asalKota?.namaKota} → ${item.rute?.tujuanKota.namaKota} `}</TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
-                      {item.asalKota?.namaKota}
+                      {item.jamBerangkat}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
-                      {item.tujuanKota?.namaKota}
+                      {item.jamTiba}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
+                      Rp{item.harga.toLocaleString('id-ID')}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                       {item.operator?.nama}
                     </TableCell>
-                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
-                      {item.deskripsi}
-                    </TableCell>
-                    <TableCell className="px-5 py-4 items-center justify-center text-center gap-4 flex">
+                    <TableCell className="px-5 py-4  text-start gap-4 flex">
                       <Button
                         type="primary"
                         icon={<EditOutlined />}
-                        onClick={() => router.push(`/admin/edit-rute/${item.id}`)}
+                        onClick={() => router.push(`/admin/edit-schedule/${item.id}`)}
                       />
                       <Button
                         type="primary"
@@ -184,7 +162,7 @@ export default function TableSchedule() {
         centered
         okButtonProps={{ danger: true }}
       >
-        <p>Apakah Anda yakin ingin menghapus rute ini?</p>
+        <p>Apakah kamu yakin ingin menghapus jadwal ini?</p>
         <p>Data yang dihapus tidak dapat dikembalikan.</p>
       </Modal>
     </div>

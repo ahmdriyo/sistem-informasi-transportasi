@@ -5,8 +5,14 @@ const prisma = new PrismaClient()
 export async function GET() {
   const schedules = await prisma.schedule.findMany({
     include: {
-      rute: true,
+      rute: {
+        include: {
+          asalKota: true,
+          tujuanKota: true,
+        },
+      },
       operator: true,
+      tipeTransportasi: true,
     },
     orderBy: { createdAt: 'desc' },
   })
