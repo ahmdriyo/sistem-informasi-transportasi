@@ -45,7 +45,7 @@ export default function TableCity() {
     try {
       await axios.delete(`/api/city/${deleteId}`)
       setData((prev) => prev.filter((item) => item.id !== deleteId))
-      message.success('Data berhasil dihapus')
+      await message.success('Data berhasil dihapus')
       setDeleteModalVisible(false)
     } catch (error) {
       console.error('Gagal menghapus data:', error)

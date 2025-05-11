@@ -1,22 +1,19 @@
 'use client'
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { usePathname } from 'next/navigation'
 import { useSidebar } from '@/context/SidebarContext'
 import {
-  BoxCubeIcon,
+  BoltIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
   ListIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  UserCircleIcon,
+  PaperPlaneIcon,
 } from '@/icons'
+import { BoxPlotFilled, PicLeftOutlined } from '@ant-design/icons'
 import axios from 'axios'
-import { BoxPlotFilled } from '@ant-design/icons'
+import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 type NavItem = {
   name: string
   icon: React.ReactNode
@@ -30,22 +27,22 @@ interface TransportationType {
   createdAt: string
 }
 const othersItems: NavItem[] = [
-  {
-    icon: <PieChartIcon />,
-    name: 'Charts',
-    subItems: [
-      { name: 'Line Chart', path: '/line-chart', pro: false },
-      { name: 'Bar Chart', path: '/bar-chart', pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: 'Authentication',
-    subItems: [
-      { name: 'Login', path: '/auth/login', pro: false },
-      { name: 'Sign Up', path: '/auth/signup', pro: false },
-    ],
-  },
+  // {
+  //   icon: <PieChartIcon />,
+  //   name: 'Charts',
+  //   subItems: [
+  //     { name: 'Line Chart', path: '/line-chart', pro: false },
+  //     { name: 'Bar Chart', path: '/bar-chart', pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <PlugInIcon />,
+  //   name: 'Authentication',
+  //   subItems: [
+  //     { name: 'Login', path: '/auth/login', pro: false },
+  //     { name: 'Sign Up', path: '/auth/signup', pro: false },
+  //   ],
+  // },
 ]
 
 const AppSidebarAdmin: React.FC = () => {
@@ -64,53 +61,64 @@ const AppSidebarAdmin: React.FC = () => {
     }
     fetchData()
   }, [])
-  const navItems = useMemo(() => [
-    {
-      icon: <GridIcon />,
-      name: 'Dashboard',
-      subItems: [{ name: 'Ecommerce', path: '/', pro: false }],
-    },
-    {
-      icon: <UserCircleIcon />,
-      name: 'User Profile',
-      path: '/profile',
-    },
-    {
-      icon: <PageIcon />,
-      name: 'Tipe Transportasi',
-      path: '/admin/type-transportation',
-    },
-    {
-      icon: <BoxCubeIcon />,
-      name: 'Kota/Kabupaten',
-      path: '/admin/city',
-    },
-    {
-      icon: <BoxPlotFilled />,
-      name: 'Operator Transportasi',
-      path: '/admin/transport-operator',
-    },
-    {
-      icon: <ListIcon />,
-      name: 'Jadwal Transportasi',
-      subItems: data.map((item) => ({
-        name: item.nama,
-        path: `/admin/schedule/${item.nama}`,
-        pro: false,
-      })),
-    },
-    {
-      icon: <ListIcon />,
-      name: 'Rute Transportasi',
-      subItems: data.map((item) => ({
-        name: item.nama,
-        path: `/admin/route/${item.nama}`,
-        pro: false,
-      })),
-    },
-  ], [data])
+  const navItems = useMemo(
+    () => [
+      {
+        icon: <GridIcon />,
+        name: 'Dashboard',
+        path: '/admin',
+      },
+      {
+        icon: (
+          <div className="p-1">
+            <PicLeftOutlined />
+          </div>
+        ),
+        name: 'Berita',
+        path: '/admin/news',
+      },
+      {
+        icon: <BoltIcon />,
+        name: 'Tipe Transportasi',
+        path: '/admin/type-transportation',
+      },
+      {
+        icon: <PaperPlaneIcon />,
+        name: 'Kota/Kabupaten',
+        path: '/admin/city',
+      },
+      {
+        icon: (
+          <div className="p-1">
+            <BoxPlotFilled />
+          </div>
+        ),
+        name: 'Operator Transportasi',
+        path: '/admin/transport-operator',
+      },
+      {
+        icon: <ListIcon />,
+        name: 'Rute Transportasi',
+        subItems: data.map((item) => ({
+          name: item.nama,
+          path: `/admin/route/${item.nama}`,
+          pro: false,
+        })),
+      },
+      {
+        icon: <ListIcon />,
+        name: 'Jadwal Transportasi',
+        subItems: data.map((item) => ({
+          name: item.nama,
+          path: `/admin/schedule/${item.nama}`,
+          pro: false,
+        })),
+      },
+    ],
+    [data],
+  )
 
-  const renderMenuItems = (navItems: NavItem[], menuType: 'main' | 'others') => (
+  const renderMenuItems = (navItems: NavItem[], menuType: 'main') => (
     <ul className="flex flex-col gap-4">
       {navItems.map((nav, index) => (
         <li key={nav.name}>
@@ -209,7 +217,7 @@ const AppSidebarAdmin: React.FC = () => {
   )
 
   const [openSubmenu, setOpenSubmenu] = useState<{
-    type: 'main' | 'others'
+    type: 'main' 
     index: number
   } | null>(null)
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({})
@@ -228,7 +236,7 @@ const AppSidebarAdmin: React.FC = () => {
           nav.subItems.forEach((subItem) => {
             if (isActive(subItem.path)) {
               setOpenSubmenu({
-                type: menuType as 'main' | 'others',
+                type: menuType as 'main',
                 index,
               })
               submenuMatched = true
@@ -242,7 +250,7 @@ const AppSidebarAdmin: React.FC = () => {
     if (!submenuMatched) {
       setOpenSubmenu(null)
     }
-  }, [pathname, isActive,navItems])
+  }, [pathname, isActive, navItems])
 
   useEffect(() => {
     // Set the height of the submenu items when the submenu is opened
@@ -257,7 +265,7 @@ const AppSidebarAdmin: React.FC = () => {
     }
   }, [openSubmenu])
 
-  const handleSubmenuToggle = (index: number, menuType: 'main' | 'others') => {
+  const handleSubmenuToggle = (index: number, menuType: 'main' ) => {
     setOpenSubmenu((prevOpenSubmenu) => {
       if (prevOpenSubmenu && prevOpenSubmenu.type === menuType && prevOpenSubmenu.index === index) {
         return null
@@ -305,17 +313,6 @@ const AppSidebarAdmin: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? 'Menu' : <HorizontaLDots />}
               </h2>
               {renderMenuItems(navItems, 'main')}
-            </div>
-
-            <div className="">
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? 'Others' : <HorizontaLDots />}
-              </h2>
-              {renderMenuItems(othersItems, 'others')}
             </div>
           </div>
         </nav>

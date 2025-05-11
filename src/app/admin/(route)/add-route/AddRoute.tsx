@@ -19,6 +19,7 @@ interface TransportationType {
 interface TransportOperatorType {
   id: string
   nama: string
+  tipe: { nama: string }
 }
 export default function AddRoute() {
   const router = useRouter()
@@ -40,21 +41,18 @@ export default function AddRoute() {
           axios.get('/api/transportation-type'),
           axios.get('/api/transport-operator'),
         ])
-
-        setCityOptions(
-          cities.data.map((city: CityType) => ({ value: city.id, label: city.namaKota }))
-        )
+        setCityOptions(cities.data.map((city: CityType) => ({ value: city.id, label: city.namaKota })))
         setTransportTypeOptions(
           transportTypes.data.map((type: TransportationType) => ({
             value: type.id,
             label: type.nama,
-          }))
+          })),
         )
         setOperatorOptions(
           operators.data.map((op: TransportOperatorType) => ({
             value: op.id,
-            label: op.nama,
-          }))
+            label: `${op.nama} (${op.tipe.nama})`,
+          })),
         )
       } catch {
         console.error('Gagal mengambil data dropdown.')
