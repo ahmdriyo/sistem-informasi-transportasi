@@ -41,13 +41,11 @@ export default function EditRoute() {
           axios.get('/api/city'),
           axios.get('/api/transport-operator'),
         ])
-
         const rute = ruteRes.data
         setAsalKotaId(rute.asalKotaId)
         setTujuanKotaId(rute.tujuanKotaId)
         setOperatorId(rute.operatorId)
         setDeskripsi(rute.deskripsi)
-
         setKotaOptions(
           kotaRes.data.map((k: CityType) => ({
             value: k.id,
@@ -60,13 +58,11 @@ export default function EditRoute() {
             label: o.nama,
           }))
         )
-
         setLoading(false)
       } catch (error) {
         console.error(error)
       }
     }
-
     fetchData()
   }, [id])
 
