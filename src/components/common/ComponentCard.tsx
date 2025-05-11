@@ -1,4 +1,4 @@
-import { ArrowRightIcon } from '@/icons'
+import { ArrowRightIcon, FileIcon } from '@/icons'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Radio } from 'antd'
 import React from 'react'
@@ -6,9 +6,10 @@ import React from 'react'
 interface ComponentCardProps {
   title: string
   children: React.ReactNode
-  className?: string // Additional custom classes for styling
-  desc?: string // Description text
+  className?: string 
+  desc?: string
   create?: () => void
+  report?: () => void
   back?: () => void
   radio?: boolean
   selected?: 'Table' | 'Statistik'
@@ -22,6 +23,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
   className = '',
   desc = '',
   create,
+  report,
   radio,
   onSelect,
   selected,
@@ -39,11 +41,18 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
           )}
           <h3 className="text-base font-medium text-gray-800 dark:text-white/90">{title}</h3>
         </div>
-        {create && (
-          <Button color="purple" variant="filled" icon={<PlusOutlined />} iconPosition={'end'} onClick={create}>
-            Tambah
-          </Button>
-        )}
+        <div className="flex gap-4">
+          {report && (
+            <Button color="purple" variant="filled" icon={<FileIcon />} iconPosition={'end'} onClick={report}>
+              Cetak Report
+            </Button>
+          )}
+          {create && (
+            <Button color="purple" variant="filled" icon={<PlusOutlined />} iconPosition={'end'} onClick={create}>
+              Tambah
+            </Button>
+          )}
+        </div>
         {radio && selected && onSelect && (
           <Radio.Group value={selected} onChange={(e) => onSelect(e.target.value)} className="radio-button ">
             <Radio.Button value="Table">Table</Radio.Button>

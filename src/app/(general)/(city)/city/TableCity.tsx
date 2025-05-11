@@ -28,8 +28,6 @@ export default function TableCity() {
     fetchData()
   }, [])
 
-
-
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
@@ -83,8 +81,8 @@ export default function TableCity() {
                       {item.namaKota}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
-                                          {format(new Date(item.createdAt), 'dd MMM yyyy')}
-                                        </TableCell>
+                      {format(new Date(item.createdAt), 'dd MMM yyyy')}
+                    </TableCell>
                   </TableRow>
                 ))
               )}

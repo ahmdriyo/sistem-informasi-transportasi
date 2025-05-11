@@ -5,7 +5,7 @@ import axios from 'axios'
 import { Button, message, Spin, Modal } from 'antd'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/navigation'
-
+import { format } from 'date-fns'
 interface CityType {
   id: string
   namaKota: string
@@ -82,6 +82,12 @@ export default function TableCity() {
                 </TableCell>
                 <TableCell
                   isHeader
+                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                >
+                  Created At
+                </TableCell>
+                <TableCell
+                  isHeader
                   className="px-5 py-3 font-medium text-center text-theme-xs text-gray-500 dark:text-gray-400"
                 >
                   Action
@@ -112,6 +118,9 @@ export default function TableCity() {
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                       {item.namaKota}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
+                      {format(new Date(item.createdAt), 'dd MMM yyyy')}
                     </TableCell>
                     <TableCell className="px-5 py-4 items-center justify-center text-center gap-4 flex">
                       <Button
