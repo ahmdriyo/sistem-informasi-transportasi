@@ -287,13 +287,13 @@ const AppSidebarAdmin: React.FC = () => {
         <Link href="/">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
-              <Image className="dark:hidden" src="/images/logo/logo.svg" alt="Logo" width={150} height={40} />
+              <Image className="dark:hidden" src="/images/logo/logo.svg" alt="Logo" width={160} height={50} />
               <Image
                 className="hidden dark:block"
                 src="/images/logo/logo-dark.svg"
                 alt="Logo"
-                width={150}
-                height={40}
+                width={160}
+                height={50}
               />
             </>
           ) : (

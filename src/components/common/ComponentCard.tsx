@@ -1,6 +1,6 @@
 import { ArrowRightIcon } from '@/icons'
 import { PlusOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
+import { Button, Radio } from 'antd'
 import React from 'react'
 
 interface ComponentCardProps {
@@ -10,9 +10,22 @@ interface ComponentCardProps {
   desc?: string // Description text
   create?: () => void
   back?: () => void
+  radio?: boolean
+  selected?: 'Table' | 'Statistik'
+  onSelect?: (value: 'Table' | 'Statistik') => void
 }
 
-const ComponentCard: React.FC<ComponentCardProps> = ({ title, children, back, className = '', desc = '', create }) => {
+const ComponentCard: React.FC<ComponentCardProps> = ({
+  title,
+  children,
+  back,
+  className = '',
+  desc = '',
+  create,
+  radio,
+  onSelect,
+  selected,
+}) => {
   return (
     <div
       className={`rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] ${className}`}
@@ -30,6 +43,12 @@ const ComponentCard: React.FC<ComponentCardProps> = ({ title, children, back, cl
           <Button color="purple" variant="filled" icon={<PlusOutlined />} iconPosition={'end'} onClick={create}>
             Tambah
           </Button>
+        )}
+        {radio && selected && onSelect && (
+          <Radio.Group value={selected} onChange={(e) => onSelect(e.target.value)} className="radio-button ">
+            <Radio.Button value="Table">Table</Radio.Button>
+            <Radio.Button value="Statistik">Statistik</Radio.Button>
+          </Radio.Group>
         )}
         {desc && <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{desc}</p>}
       </div>

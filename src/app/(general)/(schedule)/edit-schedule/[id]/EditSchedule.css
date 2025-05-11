@@ -1,0 +1,17 @@
+.dark .custom-timepicker .ant-picker-input input {
+  color: #ffffff; 
+}
+.dark .custom-timepicker .ant-picker-input input::placeholder  {
+  color: #ffffff; 
+}
+.dark .custom-timepicker .ant-picker-input .ant-picker-suffix{
+  color: #ffffff !important;
+
+}
+.dark .ant-picker {
+  background-color: #101828 !important;
+}
+
+.dark .custom-timepicker{
+  border: #344054 1px solid;
+}
