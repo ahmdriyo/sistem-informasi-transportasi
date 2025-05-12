@@ -40,7 +40,7 @@ const SchedulePage = () => {
         )
         setData(filteredData)
       } catch (error) {
-        console.error('Gagal mengambil data:', error)
+        console.error('Gagal mengambil:', error)
       }
     }
     fetchData()
