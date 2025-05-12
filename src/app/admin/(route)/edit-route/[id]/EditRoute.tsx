@@ -18,6 +18,7 @@ interface CityType {
 }
 interface TransportOperatorType {
   id: string
+  tipe: { nama: string }
   nama: string
 }
 export default function EditRoute() {
@@ -41,13 +42,11 @@ export default function EditRoute() {
           axios.get('/api/city'),
           axios.get('/api/transport-operator'),
         ])
-
         const rute = ruteRes.data
         setAsalKotaId(rute.asalKotaId)
         setTujuanKotaId(rute.tujuanKotaId)
         setOperatorId(rute.operatorId)
         setDeskripsi(rute.deskripsi)
-
         setKotaOptions(
           kotaRes.data.map((k: CityType) => ({
             value: k.id,
@@ -55,18 +54,16 @@ export default function EditRoute() {
           }))
         )
         setOperatorOptions(
-          operatorRes.data.map((o: TransportOperatorType) => ({
-            value: o.id,
-            label: o.nama,
+          operatorRes.data.map((op: TransportOperatorType) => ({
+            value: op.id,
+            label: `${op.nama} (${op.tipe.nama})`,
           }))
         )
-
         setLoading(false)
       } catch (error) {
         console.error(error)
       }
     }
-
     fetchData()
   }, [id])
 

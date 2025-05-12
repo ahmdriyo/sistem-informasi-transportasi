@@ -26,6 +26,7 @@ interface TransportationType {
 interface TransportOperatorType {
   id: string
   nama: string
+   tipe: { nama: string }
 }
 const timeFormat = 'HH:mm'
 export default function EditSchedule() {
@@ -71,9 +72,9 @@ export default function EditSchedule() {
           })),
         )
         setOperatorOptions(
-          operatorRes.data.map((o: TransportOperatorType) => ({
-            value: o.id,
-            label: o.nama,
+          operatorRes.data.map((op: TransportOperatorType) => ({
+            value: op.id,
+            label: `${op.nama} (${op.tipe.nama})`,
           })),
         )
         setTransportasiOptions(

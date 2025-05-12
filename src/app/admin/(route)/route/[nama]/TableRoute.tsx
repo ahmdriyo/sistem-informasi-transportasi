@@ -56,7 +56,7 @@ export default function TableRoute() {
     try {
       await axios.delete(`/api/route/${deleteId}`)
       setData((prev) => prev.filter((item) => item.id !== deleteId))
-      await messageApi.success('Rute berhasil dihapus')
+      await messageApi.success('Rute berhasil dihapus.')
       setDeleteModalVisible(false)
     } catch (error) {
       console.error('Gagal menghapus data:', error)
@@ -156,7 +156,7 @@ export default function TableRoute() {
                       <Button
                         type="primary"
                         icon={<EditOutlined />}
-                        onClick={() => router.push(`/admin/edit-rute/${item.id}`)}
+                        onClick={() => router.push(`/admin/edit-route/${item.id}`)}
                       />
                       <Button
                         type="primary"
