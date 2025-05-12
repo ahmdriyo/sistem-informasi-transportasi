@@ -38,7 +38,8 @@ const TypeTransportationPage = () => {
   const handlePrintPDF = () => {
     const doc = new jsPDF()
     doc.text('Laporan Data Tipe Transportasi', 14, 15)
-
+    const dateNow = new Date().toLocaleDateString('id-ID')
+    doc.text(`Tanggal: ${dateNow}`, 14, 22)
     autoTable(doc, {
       startY: 30,
       head: [['No', 'Nama Tipe Transportasi', 'Jenis Transportasi', 'Tanggal']],

@@ -32,7 +32,8 @@ const CityPage = () => {
   const handlePrintPDF = () => {
     const doc = new jsPDF()
     doc.text('Laporan Data Kota/Kabupaten', 14, 15)
-
+    const dateNow = new Date().toLocaleDateString('id-ID')
+    doc.text(`Tanggal: ${dateNow}`, 14, 22)
     autoTable(doc, {
       startY: 25,
       head: [['No', 'Nama Kota/Kabupaten', 'Tanggal']],
