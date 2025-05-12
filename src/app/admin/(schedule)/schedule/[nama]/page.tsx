@@ -69,7 +69,7 @@ const SchedulePage = () => {
     doc.save(`laporan_jadwal_transportasi_${nama}.pdf`)
   }
   return (
-    <ComponentCard title="Daftar Jadwal" report={() => handlePrintPDF()} create={() => handleCreate()}>
+    <ComponentCard title="Daftar Jadwal Transportasi" report={() => handlePrintPDF()} create={() => handleCreate()}>
       <TableSchedule />
     </ComponentCard>
   )

@@ -58,7 +58,7 @@ const RoutePage = () => {
     doc.save(`laporan_rute_transportasi_${nama}.pdf`)
   }
   return (
-    <ComponentCard title="Daftar Rute" report={() => handlePrintPDF()} create={() => handleCreate()}>
+    <ComponentCard title="Daftar Rute Transportasi" report={() => handlePrintPDF()} create={() => handleCreate()}>
       <TableRoute />
     </ComponentCard>
   )
