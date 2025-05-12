@@ -156,7 +156,7 @@ export default function TableRoute() {
                       <Button
                         type="primary"
                         icon={<EditOutlined />}
-                        onClick={() => router.push(`/admin/edit-rute/${item.id}`)}
+                        onClick={() => router.push(`/admin/edit-route/${item.id}`)}
                       />
                       <Button
                         type="primary"

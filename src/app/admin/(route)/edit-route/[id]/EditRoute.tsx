@@ -18,6 +18,7 @@ interface CityType {
 }
 interface TransportOperatorType {
   id: string
+  tipe: { nama: string }
   nama: string
 }
 export default function EditRoute() {
@@ -53,9 +54,9 @@ export default function EditRoute() {
           }))
         )
         setOperatorOptions(
-          operatorRes.data.map((o: TransportOperatorType) => ({
-            value: o.id,
-            label: o.nama,
+          operatorRes.data.map((op: TransportOperatorType) => ({
+            value: op.id,
+            label: `${op.nama} (${op.tipe.nama})`,
           }))
         )
         setLoading(false)

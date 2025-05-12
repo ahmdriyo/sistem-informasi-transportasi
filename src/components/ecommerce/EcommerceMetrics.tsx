@@ -34,7 +34,7 @@ export const EcommerceMetrics = () => {
           </div>
           <Badge color="success">
             <ArrowUpIcon />
-            {`${(Number(scheduleLength) - Number(2)).toFixed(0)},${scheduleLength}%`}
+            {`${(Number(scheduleLength) + Number(2)).toFixed(0) + 3},${scheduleLength}%`}
           </Badge>
         </div>
       </div>

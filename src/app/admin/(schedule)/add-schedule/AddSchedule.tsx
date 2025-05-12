@@ -21,6 +21,7 @@ interface TransportationType {
 }
 interface TransportOperatorType {
   id: string
+  tipe: { nama: string }
   nama: string
 }
 
@@ -61,7 +62,7 @@ export default function AddSchedule() {
         setOperatorOptions(
           operatorRes.data.map((op: TransportOperatorType) => ({
             value: op.id,
-            label: op.nama,
+           label: `${op.nama} (${op.tipe.nama})`,
           })),
         )
       } catch (error) {
