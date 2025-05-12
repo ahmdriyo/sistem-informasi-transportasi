@@ -47,7 +47,7 @@ const SchedulePage = () => {
   }, [nama])
   const handlePrintPDF = () => {
     const doc = new jsPDF()
-    doc.text('Laporan Data Rute Transportasi', 14, 15)
+    doc.text('Laporan Data Jadwal Transportasi', 14, 15)
     const dateNow = new Date().toLocaleDateString('id-ID')
     doc.text(`Tanggal: ${dateNow}`, 14, 22)
 
@@ -66,7 +66,7 @@ const SchedulePage = () => {
         1: { cellWidth: 50 }, 
       },
     })
-    doc.save(`laporan_rute_transportasi_${nama}.pdf`)
+    doc.save(`laporan_jadwal_transportasi_${nama}.pdf`)
   }
   return (
     <ComponentCard title="Daftar Jadwal" report={() => handlePrintPDF()} create={() => handleCreate()}>
