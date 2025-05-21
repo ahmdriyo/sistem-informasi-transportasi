@@ -245,15 +245,12 @@ const AppSidebar: React.FC = () => {
         }
       })
     })
-
-    // If no submenu item matches, close the open submenu
     if (!submenuMatched) {
       setOpenSubmenu(null)
     }
   }, [pathname, isActive, navItems])
 
   useEffect(() => {
-    // Set the height of the submenu items when the submenu is opened
     if (openSubmenu !== null) {
       const key = `${openSubmenu.type}-${openSubmenu.index}`
       if (subMenuRefs.current[key]) {
