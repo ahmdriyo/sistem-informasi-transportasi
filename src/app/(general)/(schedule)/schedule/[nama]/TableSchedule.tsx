@@ -1,10 +1,11 @@
 'use client'
 
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table'
-import { Spin } from 'antd'
+import { Flex, Spin } from 'antd'
 import axios from 'axios'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { IoLocation } from 'react-icons/io5'
 
 interface ScheduleType {
   id: string
@@ -17,6 +18,7 @@ interface ScheduleType {
   }
   operator: {
     nama: string
+    koordinat: string
   }
   tipeTransportasi: {
     nama: string
@@ -46,7 +48,7 @@ export default function TableSchedule() {
     fetchData()
   }, [nama])
 
-
+  console.log(data)
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -55,7 +57,7 @@ export default function TableSchedule() {
           <Table>
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                {['No', 'Rute', 'Jam Berangkat', 'Jam Tiba', 'Harga', 'Operator'].map((text) => (
+                {['No', 'Rute', 'Waktu Berangkat', 'Waktu Tiba', 'Harga', 'Operator', 'Cek Lokasi'].map((text) => (
                   <TableCell
                     key={text}
                     className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
@@ -98,7 +100,17 @@ export default function TableSchedule() {
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                       {item.operator?.nama}
                     </TableCell>
-
+                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
+                      <Flex
+                        className="cursor-pointer"
+                        onClick={() => {
+                          const url = `https://www.google.com/maps?q=${item.operator?.koordinat}`
+                          window.open(url, '_blank')
+                        }}
+                      >
+                        <IoLocation size={20} className="ml-4" />
+                      </Flex>
+                    </TableCell>
                   </TableRow>
                 ))
               )}

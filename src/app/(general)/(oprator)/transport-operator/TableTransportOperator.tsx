@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 interface TableTransportOperatorType {
   id: string
   nama: string
+  koordinat: string
   tipe: {
     nama: string
   }
@@ -31,7 +32,6 @@ export default function TableTransportOperator() {
     }
     fetchData()
   }, [])
-
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -57,6 +57,12 @@ export default function TableTransportOperator() {
                   className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
                 >
                   Tipe Transportasi
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                >
+                  Lokasi Operator Transportasi
                 </TableCell>
                 <TableCell
                   isHeader
@@ -93,6 +99,9 @@ export default function TableTransportOperator() {
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                       {item.tipe.nama}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
+                      {item.koordinat}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                       {format(new Date(item.createdAt), 'dd MMM yyyy')}

@@ -58,6 +58,7 @@ model City {
 model TransportOperator {
   id        String   @id @default(uuid())
   nama      String
+  koordinat String?
   tipeId    String
   createdAt DateTime @default(now())
 

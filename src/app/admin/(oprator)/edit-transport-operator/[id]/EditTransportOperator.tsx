@@ -7,6 +7,7 @@ import ComponentCard from '@/components/common/ComponentCard'
 import Input from '@/components/form/input/InputField'
 import Select from '@/components/form/Select'
 import Label from '@/components/form/Label'
+import MapsSelectKoordinat from '@/components/maps/MapsSelectKoordinat'
 interface TransportationType {
   id: string
   nama: string
@@ -19,19 +20,21 @@ export default function EditTransportOperator() {
 
   const [nama, setNama] = useState('')
   const [tipeId, setTipeId] = useState('')
+  const [koordinat, setKoordinat] = useState('')
   const [tipeOptions, setTipeOptions] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const operatorRes = await axios.get(`/api/transport-operator/${id}`)
-        const { nama, tipeId } = operatorRes.data
+        const { nama, tipeId, koordinat } = operatorRes.data
         setNama(nama)
+        setKoordinat(koordinat)
         setTipeId(tipeId)
         const tipeRes = await axios.get('/api/transportation-type')
         const options = tipeRes.data.map((item: TransportationType) => ({
-          value: item.id,         
-          label: item.nama,       
+          value: item.id,
+          label: item.nama,
         }))
         setTipeOptions(options)
         setLoading(false)
@@ -47,6 +50,7 @@ export default function EditTransportOperator() {
     try {
       await axios.put(`/api/transport-operator/${id}`, {
         nama,
+        koordinat,
         tipeId: tipeId,
       })
       await messageApi.success('Data berhasil diperbarui')
@@ -55,23 +59,28 @@ export default function EditTransportOperator() {
       messageApi.error('Gagal memperbarui data')
     }
   }
+  const handleSelectLocation = ({ lat, lng }: { lat: number; lng: number }) => {
+    const koordinat = `${lat.toFixed(6)}, ${lng.toFixed(6)}`
+    setKoordinat(koordinat)
+  }
 
   return (
     <ComponentCard title="Edit Transport Operator" back={() => router.back()}>
       {contextHolder}
       {!loading ? (
         <div className="space-y-6">
+          <MapsSelectKoordinat onSelectLocation={handleSelectLocation} />
+          <div>
+            <Label>Lokasi Operator Transportasi</Label>
+            <Input type="text" defaultValue={koordinat} onChange={(e) => setKoordinat(e.target.value)} disabled />
+          </div>
           <div>
             <Label>Nama Transportasi</Label>
             <Input defaultValue={nama} onChange={(e) => setNama(e.target.value)} />
           </div>
           <div>
             <Label>Tipe Transportasi</Label>
-            <Select
-              defaultValue={tipeId}
-              options={tipeOptions}
-              onChange={(value) => setTipeId(value)}
-            />
+            <Select defaultValue={tipeId} options={tipeOptions} onChange={(value) => setTipeId(value)} />
           </div>
           <div className="flex gap-4">
             <Button danger onClick={() => router.back()}>

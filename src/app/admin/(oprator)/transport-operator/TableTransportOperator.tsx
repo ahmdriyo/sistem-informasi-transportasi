@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 interface TableTransportOperatorType {
   id: string
   nama: string
+  koordinat: string
   tipe: {
     nama: string
   }
@@ -97,6 +98,12 @@ export default function TableTransportOperator() {
                   isHeader
                   className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
                 >
+                  Lokasi Operator Transportasi
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                >
                   Created At
                 </TableCell>
                 <TableCell
@@ -134,6 +141,9 @@ export default function TableTransportOperator() {
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                       {item.tipe.nama}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
+                      {item.koordinat}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                       {format(new Date(item.createdAt), 'dd MMM yyyy')}

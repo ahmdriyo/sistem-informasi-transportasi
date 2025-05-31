@@ -2,12 +2,12 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import axios from 'axios'
-import { Button, message, Spin, TimePicker } from 'antd'
+import { Button, DatePicker, message, Spin } from 'antd'
 import ComponentCard from '@/components/common/ComponentCard'
 import Input from '@/components/form/input/InputField'
 import Select from '@/components/form/Select'
 import Label from '@/components/form/Label'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import './EditSchedule.css'
 interface Option {
   label: string
@@ -26,9 +26,9 @@ interface TransportationType {
 interface TransportOperatorType {
   id: string
   nama: string
-   tipe: { nama: string }
+  tipe: { nama: string }
 }
-const timeFormat = 'HH:mm'
+const dateFormat = 'YYYY-MM-DD HH:mm'
 export default function EditSchedule() {
   const { id } = useParams()
   const router = useRouter()
@@ -117,21 +117,25 @@ export default function EditSchedule() {
       {!loading ? (
         <div className="space-y-6">
           <div>
-            <Label>Jam Berangkat</Label>
-            <TimePicker
-              format={timeFormat}
-              onChange={(time) => setJamBerangkat((time ? time.format(timeFormat) : ''))}
+            <Label>Waktu Berangkat</Label>
+            <DatePicker
+              showTime
+              format={dateFormat}
+              value={jamBerangkat ? dayjs(jamBerangkat, dateFormat) : null}
+              onChange={(datetime: Dayjs | null) => setJamBerangkat(datetime ? datetime.format(dateFormat) : '')}
               className="w-full h-[44px] custom-timepicker"
-              value={jamBerangkat ? dayjs(jamBerangkat, timeFormat) : null}
+              placeholder="select time"
             />
           </div>
           <div>
-            <Label>Jam Tiba</Label>
-            <TimePicker
-              format={timeFormat}
-              value={jamTiba ? dayjs(jamTiba, timeFormat) : null}
-              onChange={(time) => setJamTiba((time ? time.format(timeFormat) : ''))}
+            <Label>Waktu Tiba</Label>
+            <DatePicker
+              showTime
+              format={dateFormat}
+              value={jamTiba ? dayjs(jamTiba, dateFormat) : null}
+              onChange={(datetime: Dayjs | null) => setJamTiba(datetime ? datetime.format(dateFormat) : '')}
               className="w-full h-[44px] custom-timepicker"
+              placeholder="select time"
             />
           </div>
           <div>
