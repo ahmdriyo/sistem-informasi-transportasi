@@ -87,7 +87,7 @@ export default function TableSchedule() {
           <Table>
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                {['No', 'Rute', 'Jam Berangkat', 'Jam Tiba', 'Harga', 'Operator', 'Action'].map((text) => (
+                {['No', 'Rute', 'Waktu Berangkat', 'Waktu Tiba', 'Harga', 'Operator', 'Action'].map((text) => (
                   <TableCell
                     key={text}
                     className="px-5 py-3 font-medium text-start text-theme-xs text-gray-500 dark:text-gray-400"

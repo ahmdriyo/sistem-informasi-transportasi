@@ -9,6 +9,7 @@ import Label from '@/components/form/Label'
 import Input from '@/components/form/input/InputField'
 import Select from '@/components/form/Select'
 import { Button, message, Spin } from 'antd'
+import MapsSelectKoordinat from '@/components/maps/MapsSelectKoordinat'
 
 interface TransportationType {
   id: string
@@ -20,6 +21,7 @@ export default function AddTransportOperator() {
   const router = useRouter()
   const [nama, setNama] = useState('')
   const [tipeId, setTipeId] = useState('')
+  const [koordinat, setKoordinat] = useState('')
   const [transportTypes, setTransportTypes] = useState<TransportationType[]>([])
   const [loading, setLoading] = useState(true)
   const [messageApi, contextHolder] = message.useMessage()
@@ -44,7 +46,7 @@ export default function AddTransportOperator() {
   }
 
   const handleSubmit = async () => {
-    if (!nama || !tipeId) {
+    if (!nama || !tipeId || !koordinat) {
       messageApi.warning('Semua field wajib diisi.')
       return
     }
@@ -52,6 +54,7 @@ export default function AddTransportOperator() {
     try {
       await axios.post('/api/transport-operator', {
         nama,
+        koordinat,
         tipeId,
       })
       await messageApi.success('Operator transportasi berhasil ditambahkan!')
@@ -62,17 +65,23 @@ export default function AddTransportOperator() {
     }
   }
 
+  const handleSelectLocation = ({ lat, lng }: { lat: number; lng: number }) => {
+    const koordinat = `${lat.toFixed(6)}, ${lng.toFixed(6)}`
+    setKoordinat(koordinat)
+  }
+
   return (
     <ComponentCard back={handleBack} title="Input Operator Transportasi">
       {contextHolder}
       <div className="space-y-6">
+        <MapsSelectKoordinat onSelectLocation={handleSelectLocation} />
+        <div>
+          <Label>Lokasi Operator Transportasi</Label>
+          <Input type="text" defaultValue={koordinat} onChange={(e) => setKoordinat(e.target.value)} disabled />
+        </div>
         <div>
           <Label>Nama Operator Transportasi</Label>
-          <Input
-            type="text"
-            defaultValue={nama}
-            onChange={(e) => setNama(e.target.value)}
-          />
+          <Input type="text" defaultValue={nama} onChange={(e) => setNama(e.target.value)} />
         </div>
         <div>
           <Label>Tipe Transportasi</Label>

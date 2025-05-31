@@ -1,14 +1,15 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button, message, TimePicker } from 'antd'
-import axios from 'axios'
 import ComponentCard from '@/components/common/ComponentCard'
 import Input from '@/components/form/input/InputField'
 import Label from '@/components/form/Label'
 import Select from '@/components/form/Select'
+import { Button, DatePicker, message } from 'antd'
+import axios from 'axios'
+import type { Dayjs } from 'dayjs'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import './AddSchedule.css'
-const timeFormat = 'HH:mm'
+const dateFormat = 'YYYY-MM-DD HH:mm'
 interface RouteType {
   id: string
   deskripsi: string
@@ -24,7 +25,6 @@ interface TransportOperatorType {
   tipe: { nama: string }
   nama: string
 }
-
 export default function AddSchedule() {
   const router = useRouter()
   const [jamBerangkat, setJamBerangkat] = useState('')
@@ -42,7 +42,7 @@ export default function AddSchedule() {
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const [ruteRes, operatorRes,tipeRes] = await Promise.all([
+        const [ruteRes, operatorRes, tipeRes] = await Promise.all([
           axios.get('/api/route'),
           axios.get('/api/transport-operator'),
           axios.get('/api/transportation-type'),
@@ -62,7 +62,7 @@ export default function AddSchedule() {
         setOperatorOptions(
           operatorRes.data.map((op: TransportOperatorType) => ({
             value: op.id,
-           label: `${op.nama} (${op.tipe.nama})`,
+            label: `${op.nama} (${op.tipe.nama})`,
           })),
         )
       } catch (error) {
@@ -95,25 +95,28 @@ export default function AddSchedule() {
       messageApi.error('Gagal menambahkan jadwal.')
     }
   }
-
   return (
     <ComponentCard title="Tambah Jadwal" back={() => router.back()}>
       {contextHolder}
       <div className="space-y-6">
         <div>
-          <Label>Jam Berangkat</Label>
-          <TimePicker
-            format={timeFormat}
-            onChange={(time) => setJamBerangkat(time ? time.format(timeFormat) : '')}
+          <Label>Waktu Berangkat</Label>
+          <DatePicker
+            showTime
+            format={dateFormat}
+            onChange={(datetime: Dayjs | null) => setJamBerangkat(datetime ? datetime.format(dateFormat) : '')}
             className="w-full h-[44px] custom-timepicker"
+            placeholder="select time"
           />
         </div>
         <div>
-          <Label>Jam Tiba</Label>
-          <TimePicker
-            format={timeFormat}
-            onChange={(time) => setJamTiba(time ? time.format(timeFormat) : '')}
+          <Label>Waktu Tiba</Label>
+          <DatePicker
+            showTime
+            format={dateFormat}
+            onChange={(datetime: Dayjs | null) => setJamTiba(datetime ? datetime.format(dateFormat) : '')}
             className="w-full h-[44px] custom-timepicker"
+            placeholder="select time"
           />
         </div>
         <div>
