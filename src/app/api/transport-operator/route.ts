@@ -19,15 +19,16 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { nama, tipeId } = await req.json()
+    const { nama, tipeId, koordinat } = await req.json()
 
-    if (!nama || !tipeId) {
-      return NextResponse.json({ error: 'Field nama dan tipeId wajib diisi' }, { status: 400 })
+    if (!nama || !tipeId || !koordinat) {
+      return NextResponse.json({ error: 'Field nama, koordinat dan tipeId wajib diisi' }, { status: 400 })
     }
 
     const newOperator = await prisma.transportOperator.create({
       data: {
         nama,
+        koordinat,
         tipeId,
       },
     })
