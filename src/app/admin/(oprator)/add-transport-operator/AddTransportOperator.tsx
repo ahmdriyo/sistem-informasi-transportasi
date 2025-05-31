@@ -17,7 +17,6 @@ interface TransportationType {
 }
 
 export default function AddTransportOperator() {
-
   const router = useRouter()
   const MapsSelectKoordinat = dynamic(() => import('@/components/maps/MapsSelectKoordinat'), { ssr: false });
   const [nama, setNama] = useState('')
