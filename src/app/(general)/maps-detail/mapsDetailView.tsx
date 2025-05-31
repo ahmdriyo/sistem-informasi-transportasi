@@ -1,9 +1,10 @@
 'use client'
-import MapsViwe from '@/components/maps/MapsViwe'
 import { ArrowRightIcon } from '@/icons'
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation'
-const MapsView = () => {
+export default function MapsDetailView() {
   const router = useRouter()
+  const MapsView = dynamic(() => import('@/components/maps/MapsView'), { ssr: false });
   return (
     <div>
       <div
@@ -16,10 +17,8 @@ const MapsView = () => {
         <p className="text-warning-25">Kembali</p>
       </div>
       <div className="relative h-[80vh] w-full">
-        <MapsViwe />
+        <MapsView />
       </div>
     </div>
   )
 }
-
-export default MapsView

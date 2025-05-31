@@ -7,12 +7,13 @@ import ComponentCard from '@/components/common/ComponentCard'
 import Input from '@/components/form/input/InputField'
 import Select from '@/components/form/Select'
 import Label from '@/components/form/Label'
-import MapsSelectKoordinat from '@/components/maps/MapsSelectKoordinat'
+import dynamic from 'next/dynamic'
 interface TransportationType {
   id: string
   nama: string
 }
 export default function EditTransportOperator() {
+  const MapsSelectKoordinat = dynamic(() => import('@/components/maps/MapsSelectKoordinat'), { ssr: false });
   const { id } = useParams()
   const router = useRouter()
   const [loading, setLoading] = useState(true)
