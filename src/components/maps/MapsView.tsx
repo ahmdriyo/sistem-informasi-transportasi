@@ -19,7 +19,7 @@ interface TableTransportOperatorType {
   }
   createdAt: string
 }
-const MapsViwe = () => {
+const MapsView = () => {
   const [data, setData] = useState<TableTransportOperatorType[]>([])
   useEffect(() => {
     async function fetchData() {
@@ -94,4 +94,4 @@ const MapsViwe = () => {
   return <div id="map" className="h-full w-full rounded-2xl" style={{ minHeight: '300px' }} />
 }
 
-export default MapsViwe
+export default MapsView

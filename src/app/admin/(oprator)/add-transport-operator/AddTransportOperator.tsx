@@ -1,5 +1,4 @@
 'use client'
-
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
@@ -9,7 +8,7 @@ import Label from '@/components/form/Label'
 import Input from '@/components/form/input/InputField'
 import Select from '@/components/form/Select'
 import { Button, message, Spin } from 'antd'
-import MapsSelectKoordinat from '@/components/maps/MapsSelectKoordinat'
+import dynamic from 'next/dynamic'
 
 interface TransportationType {
   id: string
@@ -18,7 +17,9 @@ interface TransportationType {
 }
 
 export default function AddTransportOperator() {
+
   const router = useRouter()
+  const MapsSelectKoordinat = dynamic(() => import('@/components/maps/MapsSelectKoordinat'), { ssr: false });
   const [nama, setNama] = useState('')
   const [tipeId, setTipeId] = useState('')
   const [koordinat, setKoordinat] = useState('')

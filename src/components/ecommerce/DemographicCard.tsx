@@ -9,8 +9,8 @@ import { GiAirplaneDeparture } from 'react-icons/gi'
 import { MdCardTravel } from 'react-icons/md'
 import { Dropdown } from '../ui/dropdown/Dropdown'
 import { DropdownItem } from '../ui/dropdown/DropdownItem'
-import MapsViwe from '../maps/MapsViwe'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 
 interface RouteType {
   id: string
@@ -30,6 +30,7 @@ interface TransportItem {
 }
 
 export default function DemographicCard() {
+  const MapsView = dynamic(() => import("../maps/MapsView"), { ssr: false });
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
   const [transportStats, setTransportStats] = useState<TransportItem[]>([])
@@ -101,7 +102,7 @@ export default function DemographicCard() {
       </div>
       <div className="p-0 mt-4 mb-4 overflow-hidden border border-gray-200 rounded-2xl bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
         <div className="relative h-[300px] w-full">
-          <MapsViwe />
+          <MapsView />
         </div>
       </div>
 

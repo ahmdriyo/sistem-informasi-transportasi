@@ -1,8 +1,9 @@
-import MapsView from './mapsView'
+'use client'
+import MapsDetailView from "./mapsDetailView"
 const MapsPage = () => {
   return (
     <div>
-      <MapsView />
+      <MapsDetailView />
     </div>
   )
 }
