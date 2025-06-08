@@ -24,16 +24,17 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const id = (await params).id
-    const { nama, tipeId } = await req.json()
+    const { nama, tipeId ,koordinat} = await req.json()
 
-    if (!nama || !tipeId) {
-      return NextResponse.json({ error: 'Field nama dan tipeId wajib diisi' }, { status: 400 })
+    if (!nama || !tipeId || !koordinat) {
+      return NextResponse.json({ error: 'Field nama, koordinat dan tipeId wajib diisi' }, { status: 400 })
     }
 
     const updatedOperator = await prisma.transportOperator.update({
       where: { id },
       data: {
         nama,
+        koordinat,
         tipeId,
       },
     })

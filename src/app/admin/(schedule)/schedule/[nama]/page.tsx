@@ -53,7 +53,7 @@ const SchedulePage = () => {
 
     autoTable(doc, {
       startY: 30,
-      head: [['No', 'Rute', 'Jam Berangkat', 'Jam Tiba', 'Harga', 'Operator']],
+      head: [['No', 'Rute', 'Waktu Berangkat', 'Waktu Tiba', 'Harga', 'Operator']],
       body: data.map((item, index) => [
         index + 1,
         `${item.rute?.asalKota?.namaKota}-${item.rute?.tujuanKota.namaKota}`,
