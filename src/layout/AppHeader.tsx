@@ -3,7 +3,9 @@ import { getToken } from '@/app/auth/action'
 import { logout } from '@/components/auth/Logout'
 import { ThemeToggleButton } from '@/components/common/ThemeToggleButton'
 import { useSidebar } from '@/context/SidebarContext'
+import { useGlobalStore } from '@/store/globalState'
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons'
+import { Switch } from 'antd'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -11,6 +13,7 @@ import React, { useEffect, useRef, useState } from 'react'
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false)
   const [name, setName] = useState('')
+  const { isSwitchOn, toggleSwitch } = useGlobalStore()
   const router = useRouter()
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar()
@@ -64,7 +67,7 @@ const AppHeader: React.FC = () => {
 
   return (
     <header className="z-999 sticky top-0 flex w-full bg-white border-gray-200 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
-      <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6" >
+      <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
         <div className="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
           <button
             className="items-center justify-center w-10 h-10 text-gray-500 border-gray-200 rounded-lg z-99999 dark:border-gray-800 lg:flex dark:text-gray-400 lg:h-11 lg:w-11 lg:border"
@@ -109,13 +112,17 @@ const AppHeader: React.FC = () => {
               />
             </svg>
           </button>
-          <p className='dark:text-white hidden lg:block text-lg'>Sistem Informasi Transportasi Kalimantan Selatan</p>
+          <p className="dark:text-white hidden lg:block text-lg">Sistem Informasi Transportasi Kalimantan Selatan</p>
         </div>
         <div
           className={`${
             isApplicationMenuOpen ? 'flex' : 'hidden'
           } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none z-999`}
         >
+        <div className="flex justify-center flex-row gap-4">
+          <p className='text-gray-700 rounded-lg group text-theme-sm dark:text-gray-400'>Open Cam</p>
+          <Switch checked={isSwitchOn} onChange={toggleSwitch} />
+        </div>
           <p className="dark:text-warning-25">{name}</p>
           <div className="flex items-center gap-2 justify-center">
             {name ? (
