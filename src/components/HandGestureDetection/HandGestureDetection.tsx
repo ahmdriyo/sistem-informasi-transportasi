@@ -1,8 +1,10 @@
 'use client'
 import { useGlobalStore } from '@/store/globalState'
 import { GestureRecognizer } from '@mediapipe/tasks-vision'
+import { Tooltip } from 'antd'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import { FaCircleInfo } from 'react-icons/fa6'
 
 export default function HandGestureDetection() {
   const router = useRouter()
@@ -130,15 +132,41 @@ export default function HandGestureDetection() {
     }
   }, [gestureRecognizer, isSwitchOn])
 
+  const text = [
+    '✌️ to "/" ',
+    '🖐️ to "/news" ',
+    '☝️ to "/type-transportation" ',
+    '✊ to "/schedule/Travel" ',
+    '👎 to "/transport-operator" ',
+    '🤟 to "/route/Travel" ',
+    '👍 to "/city" ',
+  ]
+
   return (
     <>
       {isSwitchOn && (
-        <div className="fixed bottom-4 right-4 z-[9999] flex flex-col items-center space-y-2 bg-gray-700/80 dark:bg-gray-900 p-2 rounded-xl shadow-xl backdrop-blur">
+        <div className="fixed bottom-4 right-4 z-[998] flex flex-col items-center space-y-2 bg-gray-700/80 dark:bg-gray-900 p-2 rounded-xl shadow-xl backdrop-blur">
           <div className="relative">
             <video ref={videoRef} autoPlay className="rounded-lg shadow-lg" width={280} height={200} />
             <canvas ref={canvasRef} className="absolute top-0 left-0 rounded-lg" width={280} height={200} />
           </div>
-          <div className="text-white text-sm bg-black/75 px-3 py-1 rounded-lg shadow-md text-center">
+          <div className="flex flex-row gap-3 items-center text-white text-sm bg-black/75 px-3 py-1 rounded-lg shadow-md text-center">
+            <Tooltip
+              placement="topRight"
+              title={
+                <span>
+                  {text.map((line, index) => (
+                    <span key={index}>
+                      {line}
+                      <br />
+                    </span>
+                  ))}
+                </span>
+              }
+              className="z-[99999]"
+            >
+              <FaCircleInfo />
+            </Tooltip>
             {gestureOutput}
           </div>
         </div>
