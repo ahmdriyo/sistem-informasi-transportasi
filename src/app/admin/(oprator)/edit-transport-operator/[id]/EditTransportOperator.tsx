@@ -7,13 +7,12 @@ import ComponentCard from '@/components/common/ComponentCard'
 import Input from '@/components/form/input/InputField'
 import Select from '@/components/form/Select'
 import Label from '@/components/form/Label'
-import dynamic from 'next/dynamic'
+import MapsSelector from '../../add-transport-operator/MapsSelector'
 interface TransportationType {
   id: string
   nama: string
 }
 export default function EditTransportOperator() {
-  const MapsSelectKoordinat = dynamic(() => import('@/components/maps/MapsSelectKoordinat'), { ssr: false });
   const { id } = useParams()
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -63,6 +62,8 @@ export default function EditTransportOperator() {
   const handleSelectLocation = ({ lat, lng }: { lat: number; lng: number }) => {
     const koordinat = `${lat.toFixed(6)}, ${lng.toFixed(6)}`
     setKoordinat(koordinat)
+
+    console.log("koordinat",koordinat)
   }
 
   return (
@@ -70,10 +71,10 @@ export default function EditTransportOperator() {
       {contextHolder}
       {!loading ? (
         <div className="space-y-6">
-          <MapsSelectKoordinat onSelectLocation={handleSelectLocation} />
+          <MapsSelector onSelectLocation={handleSelectLocation} />
           <div>
             <Label>Lokasi Operator Transportasi</Label>
-            <Input type="text" defaultValue={koordinat} onChange={(e) => setKoordinat(e.target.value)} disabled />
+            <Input type="text" value={koordinat} onChange={(e) => setKoordinat(e.target.value)} disabled />
           </div>
           <div>
             <Label>Nama Transportasi</Label>
