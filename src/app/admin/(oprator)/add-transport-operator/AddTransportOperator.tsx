@@ -8,7 +8,7 @@ import Label from '@/components/form/Label'
 import Input from '@/components/form/input/InputField'
 import Select from '@/components/form/Select'
 import { Button, message, Spin } from 'antd'
-import dynamic from 'next/dynamic'
+import MapsSelector from './MapsSelector'
 
 interface TransportationType {
   id: string
@@ -18,7 +18,6 @@ interface TransportationType {
 
 export default function AddTransportOperator() {
   const router = useRouter()
-  const MapsSelectKoordinat = dynamic(() => import('@/components/maps/MapsSelectKoordinat'), { ssr: false });
   const [nama, setNama] = useState('')
   const [tipeId, setTipeId] = useState('')
   const [koordinat, setKoordinat] = useState('')
@@ -74,7 +73,7 @@ export default function AddTransportOperator() {
     <ComponentCard back={handleBack} title="Input Operator Transportasi">
       {contextHolder}
       <div className="space-y-6">
-        <MapsSelectKoordinat onSelectLocation={handleSelectLocation} />
+        <MapsSelector onSelectLocation={handleSelectLocation} />
         <div>
           <Label>Lokasi Operator Transportasi</Label>
           <Input type="text" defaultValue={koordinat} onChange={(e) => setKoordinat(e.target.value)} disabled />
