@@ -293,7 +293,6 @@ export const ReportHandGestureRecognition = () => {
   return (
     <div
       style={{
-        maxWidth: 1400,
         margin: '40px auto',
         background: '#fff',
         padding: 24,
