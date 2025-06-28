@@ -2,6 +2,7 @@
 import { useGlobalStore } from '@/store/globalState'
 import { GestureRecognizer } from '@mediapipe/tasks-vision'
 import { Tooltip } from 'antd'
+import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { FaCircleInfo } from 'react-icons/fa6'
@@ -11,38 +12,52 @@ export default function HandGestureDetection() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [gestureOutput, setGestureOutput] = useState('')
+  const [score, setScore] = useState(0)
   const [gestureRecognizer, setGestureRecognizer] = useState<GestureRecognizer | null>(null)
   const [stream, setStream] = useState<MediaStream | null>(null)
   const animationFrameId = useRef<number | null>(null)
   const { isSwitchOn } = useGlobalStore()
 
   useEffect(() => {
-    if (!gestureOutput) return
+    const CONFIDENCE_THRESHOLD = 0.6
 
-    switch (gestureOutput) {
-      case 'Gesture: Victory':
-        router.push('/')
-        break
-      case 'Gesture: Open_Palm':
-        router.push('/news')
-        break
-      case 'Gesture: Pointing_Up':
-        router.push('/type-transportation')
-        break
-      case 'Gesture: Thumb_Up':
-        router.push('/city')
-        break
-      case 'Gesture: Thumb_Down':
-        router.push('/transport-operator')
-        break
-      case 'Gesture: ILoveYou':
-        router.push('/route/Travel')
-        break
-      case 'Gesture: Closed_Fist':
-        router.push('/schedule/Travel')
-        break
+    const statusValue = score >= CONFIDENCE_THRESHOLD ? 'berhasil' : 'gagal'
+    const getTarget = (gesture: string) => {
+      switch (gesture) {
+        case 'Gesture: Victory':
+          return '/'
+        case 'Gesture: Open_Palm':
+          return '/news'
+        case 'Gesture: Pointing_Up':
+          return '/type-transportation'
+        case 'Gesture: Thumb_Up':
+          return '/city'
+        case 'Gesture: Thumb_Down':
+          return '/transport-operator'
+        case 'Gesture: ILoveYou':
+          return '/route/Travel'
+        case 'Gesture: Closed_Fist':
+          return '/schedule/Travel'
+        default:
+          return ''
+      }
     }
-  }, [gestureOutput, router])
+    const targetValue = getTarget(gestureOutput)
+    const deviceInfo = navigator.userAgent;
+    if (gestureOutput) {
+      console.log('Gesture type:', gestureOutput, 'Score:', score, 'Status:', statusValue, 'Action Target:', targetValue)
+      axios.post('/api/gesture-navigation', {
+        gestureType: gestureOutput,
+        actionTarget: targetValue ? `Halaman ${targetValue}` : ' - ',
+        status: statusValue,
+        confidence: score,
+        userAgent : deviceInfo,
+      })
+      if (statusValue === 'berhasil' && targetValue) {
+        router.push(targetValue)
+      }
+    }
+  }, [gestureOutput, score, router])
 
   useEffect(() => {
     const loadRecognizer = async () => {
@@ -81,7 +96,6 @@ export default function HandGestureDetection() {
 
     let lastVideoTime = -1
     let lastGestureUpdate = 0
-
     const predictWebcam = async () => {
       if (!gestureRecognizer || !videoRef.current || !canvasRef.current) return
 
@@ -109,9 +123,18 @@ export default function HandGestureDetection() {
         }
         canvasCtx?.restore()
         if (nowInMs - lastGestureUpdate >= 5000) {
-          const detected = results.gestures.length > 0
-          const newOutput = detected ? `Gesture: ${results.gestures[0][0].categoryName}` : 'No gesture detected.'
-          setGestureOutput(newOutput)
+          const gestureGroups = results.gestures
+          const hasGesture = gestureGroups?.length > 0 && gestureGroups[0]?.length > 0
+          if (hasGesture) {
+            const gesture = gestureGroups[0][0]
+            const newOutput = `Gesture: ${gesture.categoryName}`
+            const newOutputScore = Number(gesture.score.toFixed(2))
+            setGestureOutput(newOutput)
+            setScore(newOutputScore)
+          } else {
+            setGestureOutput('No gesture detected.')
+            setScore(0) 
+          }
           lastGestureUpdate = nowInMs
         }
       }

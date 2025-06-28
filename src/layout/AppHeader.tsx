@@ -5,7 +5,7 @@ import { ThemeToggleButton } from '@/components/common/ThemeToggleButton'
 import { useSidebar } from '@/context/SidebarContext'
 import { useGlobalStore } from '@/store/globalState'
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons'
-import { Switch } from 'antd'
+import { Button, Spin, Switch } from 'antd'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -13,6 +13,7 @@ import React, { useEffect, useRef, useState } from 'react'
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false)
   const [name, setName] = useState('')
+  const [loading, setLoading] = useState(true)
   const { isSwitchOn, toggleSwitch } = useGlobalStore()
   const router = useRouter()
 
@@ -47,6 +48,7 @@ const AppHeader: React.FC = () => {
   }, [])
   useEffect(() => {
     const fetchUser = async () => {
+      setLoading(true)
       const token = await getToken()
       const res = await fetch('/api/user', {
         headers: {
@@ -56,8 +58,9 @@ const AppHeader: React.FC = () => {
       const data = await res.json()
       const dataName = data.user?.name
       setName(dataName)
-      return data
+      setLoading(false)
     }
+
     fetchUser()
   }, [])
   const handelLogout = async () => {
@@ -119,10 +122,22 @@ const AppHeader: React.FC = () => {
             isApplicationMenuOpen ? 'flex' : 'hidden'
           } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none z-999`}
         >
-        <div className="flex justify-center flex-row gap-4">
-          <p className='text-gray-700 rounded-lg group text-theme-sm dark:text-gray-400'>Open Cam</p>
-          <Switch checked={isSwitchOn} onChange={toggleSwitch} />
-        </div>
+          <>
+            {loading ? (
+              <div className="flex justify-center items-center">
+                <Spin tip="Loading user..." size="small" />
+              </div>
+            ) : name !== 'Admin' ? (
+              <div className="flex justify-center flex-row gap-4">
+                <p className="text-gray-700 rounded-lg group text-theme-sm dark:text-gray-400">Open Cam</p>
+                <Switch checked={isSwitchOn} onChange={toggleSwitch} />
+              </div>
+            ) : (
+              <Button type="primary" onClick={() => router.push('/admin/report-hand-gesture-recognition')}>
+                Report Hand Gesture Recognition
+              </Button>
+            )}
+          </>
           <p className="dark:text-warning-25">{name}</p>
           <div className="flex items-center gap-2 justify-center">
             {name ? (

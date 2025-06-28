@@ -96,3 +96,19 @@ model Schedule {
   operator           TransportOperator  @relation(fields: [operatorId], references: [id])
   createdAt          DateTime           @default(now())
 }
+
+model LogGestureNavigation {
+  id           Int      @id @default(autoincrement())
+  gestureType  String   @db.VarChar(50)      
+  actionTarget String   @db.VarChar(100)     
+  status       Status 
+  confidence   Float
+  timestamp    DateTime @default(now())
+  userAgent    String?  
+}
+
+
+enum Status {
+  berhasil
+  gagal
+}
